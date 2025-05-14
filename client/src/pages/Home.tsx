@@ -60,9 +60,9 @@ export default function Home() {
           Create X post of your artwork and tag @tweetonium_xyz to transform it into NFTs on the Solana Blockchain.
         </p>
         <Button 
-          variant="outline" 
+          variant="default" 
           size="lg" 
-          className="rounded-full border-2 border-white px-6 py-6 text-lg font-medium hover:bg-white hover:text-black"
+          className="rounded-full px-6 py-6 text-lg font-medium bg-purple-600 hover:bg-purple-700 text-white"
           onClick={() => setMintOpen(true)}
         >
           Tag your artwork to @tweetonium_xyz
