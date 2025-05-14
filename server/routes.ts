@@ -190,11 +190,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tab = req.query.tab as string || "featured";
       const sort = req.query.sort as string || "newest";
       
+      console.log(`Fetching NFTs with tab: ${tab}, sort: ${sort}`);
+      
       let nfts;
       if (tab === "featured") {
         nfts = await storage.getFeaturedNFTs();
+        console.log(`Found ${nfts.length} featured NFTs`);
       } else {
         nfts = await storage.getNewNFTs();
+        console.log(`Found ${nfts.length} new NFTs`);
       }
       
       // Sort NFTs
@@ -222,6 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       }));
       
+      console.log(`Returning ${formattedNfts.length} formatted NFTs`);
       res.json(formattedNfts);
     } catch (error) {
       console.error("Explore NFTs error:", error);

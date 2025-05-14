@@ -12,15 +12,17 @@ export default function Home() {
   const [mintOpen, setMintOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
 
-  const { data: featuredNfts } = useQuery({
-    queryKey: ["/api/explore?tab=featured"],
+  const { data: featuredNfts, isLoading: featuredLoading } = useQuery({
+    queryKey: ["/api/explore", { tab: "featured" }],
     enabled: isAuthenticated,
   });
 
-  const { data: newNfts } = useQuery({
-    queryKey: ["/api/explore?tab=new"],
+  const { data: newNfts, isLoading: newLoading } = useQuery({
+    queryKey: ["/api/explore", { tab: "new" }],
     enabled: isAuthenticated,
   });
+  
+  console.log("Featured NFTs:", featuredNfts);
 
   if (!isAuthenticated) {
     return (
