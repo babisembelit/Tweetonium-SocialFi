@@ -104,7 +104,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Geometric Dreams",
       description: "An exploration of geometric shapes and neon colors in digital space. This piece represents the intersection of mathematics and art.",
-      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1614850523459-c2f4c699c32a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Geometric Dreams" },
@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Cyber City 2077",
       description: "A futuristic cityscape inspired by cyberpunk aesthetics and sci-fi visions of tomorrow. Each building tells a story of the future.",
-      imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1622737133809-d95047b9e673?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
       metadata: { name: "Cyber City 2077" },
@@ -126,7 +126,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Retro Pixel Hero",
       description: "A colorful pixel art character inspired by retro gaming aesthetic. This nostalgic piece brings back memories of 8-bit adventures.",
-      imageUrl: "https://images.unsplash.com/photo-1578632767115-351597cf2477?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1635322966219-b75ed372eb01?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist3.id,
       walletAddress: wallet3.publicKey,
       metadata: { name: "Retro Pixel Hero" },
@@ -137,7 +137,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Dreamscape",
       description: "A surreal digital painting featuring dreamlike elements and flowing composition. Enter a world where reality bends to imagination.",
-      imageUrl: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1633186710895-309db2ddaf69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Dreamscape" },
@@ -148,7 +148,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Neon Horizon",
       description: "A vibrant landscape with glowing neon elements inspired by synthwave aesthetics and retro-futuristic dreams.",
-      imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1604871000636-074fa5117945?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist4.id,
       walletAddress: wallet4.publicKey,
       metadata: { name: "Neon Horizon" },
@@ -159,7 +159,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Cosmic Journey",
       description: "An artistic interpretation of deep space with swirling galaxies and nebulae. A meditation on our place in the universe.",
-      imageUrl: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist5.id,
       walletAddress: wallet5.publicKey,
       metadata: { name: "Cosmic Journey" },
@@ -170,7 +170,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Digital Forest",
       description: "A peaceful virtual forest with data trees and binary leaves. Nature reimagined through the lens of technology.",
-      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist3.id,
       walletAddress: wallet3.publicKey,
       metadata: { name: "Digital Forest" },
@@ -181,7 +181,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Abstract Emotions",
       description: "A series of abstract shapes and colors representing the full spectrum of human emotions. Each viewer may find different meanings.",
-      imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
       metadata: { name: "Abstract Emotions" },
@@ -192,7 +192,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Virtual Sculpture",
       description: "A 3D sculpture that could never exist in physical space due to impossible geometries. Digital art breaks the rules of reality.",
-      imageUrl: "https://images.unsplash.com/photo-1559030623-0226b1241edd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist5.id,
       walletAddress: wallet5.publicKey,
       metadata: { name: "Virtual Sculpture" },
@@ -204,7 +204,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Minimal Shapes",
       description: "A minimalist digital artwork with bold lines and shapes. Simplicity speaks volumes in this careful composition.",
-      imageUrl: "https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
       metadata: { name: "Minimal Shapes" },
@@ -215,7 +215,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Digital Sculpture #42",
       description: "A 3D rendered abstract sculpture in vibrant colors. Digital techniques bring this impossible form to life.",
-      imageUrl: "https://images.unsplash.com/photo-1633109741715-f64664cf9b7f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1578632767115-351597cf2477?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist3.id,
       walletAddress: wallet3.publicKey,
       metadata: { name: "Digital Sculpture #42" },
@@ -226,7 +226,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Flow State",
       description: "A colorful generative art piece with flowing patterns created through algorithmic processes and artistic direction.",
-      imageUrl: "https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Flow State" },
@@ -237,7 +237,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Digital Collage #7",
       description: "A digital collage combining photography and abstract elements. The juxtaposition creates new meanings and interpretations.",
-      imageUrl: "https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1559030623-0226b1241edd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
       metadata: { name: "Digital Collage #7" },
@@ -248,7 +248,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Cybernetic Dreams",
       description: "An exploration of the relationship between humans and technology in a digitized future where the boundaries blur.",
-      imageUrl: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist4.id,
       walletAddress: wallet4.publicKey,
       metadata: { name: "Cybernetic Dreams" },
