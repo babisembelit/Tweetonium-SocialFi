@@ -101,25 +101,36 @@ export default function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="bg-secondary border-r border-gray-800 text-white w-[250px] pt-10">
-            <nav className="flex flex-col gap-4">
-              <Link href="/">
-                <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}>
-                  Home
-                </a>
-              </Link>
-              <Link href="/explore">
-                <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}>
-                  Explore
-                </a>
-              </Link>
-              {isAuthenticated && (
-                <Link href="/my-nfts">
-                  <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}>
-                    My NFTs
+            {({ setOpen }) => (
+              <nav className="flex flex-col gap-4">
+                <Link href="/">
+                  <a 
+                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    Home
                   </a>
                 </Link>
-              )}
-            </nav>
+                <Link href="/explore">
+                  <a 
+                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    Explore
+                  </a>
+                </Link>
+                {isAuthenticated && (
+                  <Link href="/my-nfts">
+                    <a 
+                      className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}
+                      onClick={() => setOpen(false)}
+                    >
+                      My NFTs
+                    </a>
+                  </Link>
+                )}
+              </nav>
+            )}
           </SheetContent>
         </Sheet>
       </div>
