@@ -55,7 +55,7 @@ export default function Home() {
       <section className="py-12 md:py-16 px-4 md:px-8 text-center">
         <h2 className="text-3xl md:text-4xl mb-6 pixel-font">MINT NFT</h2>
         <p className="mb-8 max-w-md mx-auto">
-          Share your creativity with the world by transforming your X posts into unique NFTs on Solana.
+          Create X post of your artwork and tag @tweetonium_xyz to transform it into NFTs on the Solana Blockchain.
         </p>
         <Button 
           variant="outline" 
