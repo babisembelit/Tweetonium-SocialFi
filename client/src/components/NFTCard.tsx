@@ -14,6 +14,7 @@ export interface NFT {
   views?: number;
   transactions?: string;
   floorPrice?: string;
+  tokenId?: string;
 }
 
 interface NFTCardProps {
