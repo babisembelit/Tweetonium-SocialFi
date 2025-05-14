@@ -6,9 +6,18 @@ import { useState } from "react";
 import ConnectXModal from "@/components/ConnectXModal";
 import { shortenAddress } from "@/lib/utils";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogClose
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,17 +30,36 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut } from "lucide-react";
+import { LogOut, Wallet, Copy, X, ExternalLink } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showWalletDetails, setShowWalletDetails] = useState(false);
   const [location] = useLocation();
   const { isAuthenticated, user, wallet, logout } = useAuthStore();
+  const { toast } = useToast();
 
   const handleLogout = () => {
     logout();
     setShowLogoutConfirm(false);
+  };
+
+  const copyWalletAddress = () => {
+    if (wallet?.publicKey) {
+      navigator.clipboard.writeText(wallet.publicKey);
+      toast({
+        title: "Wallet address copied",
+        description: "Your wallet address has been copied to clipboard",
+      });
+    }
+  };
+
+  const openInSolanaExplorer = () => {
+    if (wallet?.publicKey) {
+      window.open(`https://explorer.solana.com/address/${wallet.publicKey}?cluster=devnet`, "_blank");
+    }
   };
 
   return (
@@ -76,12 +104,28 @@ export default function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center space-x-2 border border-gray-800 rounded-full px-3 py-1.5 cursor-pointer hover:bg-gray-900 transition-colors">
-                  <span className="text-sm">{shortenAddress(wallet?.publicKey || "")}</span>
+                  <span 
+                    className="text-sm hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowWalletDetails(true);
+                    }}
+                  >
+                    {shortenAddress(wallet?.publicKey || "")}
+                  </span>
                   <span className="text-gray-400">|</span>
                   <span className="text-sm">@{user?.username}</span>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-secondary border border-gray-800 text-white">
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-gray-800 focus:bg-gray-800"
+                  onClick={() => setShowWalletDetails(true)}
+                >
+                  <Wallet className="mr-2 h-4 w-4" />
+                  <span>Wallet Details</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-gray-800" />
                 <DropdownMenuItem 
                   className="cursor-pointer hover:bg-gray-800 focus:bg-gray-800"
                   onClick={() => setShowLogoutConfirm(true)}
@@ -92,6 +136,58 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Wallet Details Dialog */}
+            <Dialog open={showWalletDetails} onOpenChange={setShowWalletDetails}>
+              <DialogContent className="sm:max-w-md bg-secondary border border-gray-800 text-white">
+                <DialogClose className="absolute right-4 top-4 text-gray-400 hover:text-white">
+                  <X className="h-5 w-5" />
+                </DialogClose>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-medium mb-2">Wallet Details</DialogTitle>
+                  <DialogDescription className="text-gray-300">
+                    Your Solana wallet on the Devnet network.
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="py-4">
+                  <div className="mb-6">
+                    <h4 className="text-sm text-gray-400 mb-1">Wallet Address</h4>
+                    <div className="flex items-center justify-between bg-black p-3 rounded-lg border border-gray-800 break-all">
+                      <span className="text-sm">{wallet?.publicKey}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="ml-2 text-gray-400 hover:text-white"
+                        onClick={copyWalletAddress}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h4 className="text-sm text-gray-400 mb-1">Network</h4>
+                    <p className="text-sm bg-black p-3 rounded-lg border border-gray-800">Solana Devnet</p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <h4 className="text-sm text-gray-400 mb-1">Balance</h4>
+                    <p className="text-sm bg-black p-3 rounded-lg border border-gray-800">1.0 SOL (simulated)</p>
+                  </div>
+
+                  <Button 
+                    variant="outline" 
+                    className="w-full mt-4"
+                    onClick={openInSolanaExplorer}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    View on Solana Explorer
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* Logout Confirmation Dialog */}
             <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
               <AlertDialogContent className="bg-secondary border border-gray-800 text-white">
                 <AlertDialogHeader>
