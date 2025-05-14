@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import NFTCard from "@/components/NFTCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import MintNFTModal from "@/components/MintNFTModal";
 
 export default function MyNFT() {
+  const [mintOpen, setMintOpen] = useState(false);
   const { data: nfts, isLoading } = useQuery({
     queryKey: ["/api/my-nfts"],
   });
@@ -36,18 +40,20 @@ export default function MyNFT() {
             <p className="text-gray-400 mb-6">
               Create your first NFT by minting an image from your X posts
             </p>
-            <div className="bg-gray-900 p-6 max-w-md mx-auto rounded-lg border border-purple-500">
-              <p className="font-semibold text-lg mb-3">How to mint your first NFT:</p>
-              <p className="text-gray-300 mb-4">
-                Tag your artwork to <span className="text-purple-400 font-bold">@tweetonium_xyz</span> on X
-              </p>
-              <p className="text-sm text-gray-400">
-                We'll automatically detect your tagged post and you can mint it as an NFT directly from here
-              </p>
+            <div className="mb-6">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="rounded-full border-2 border-white px-6 py-6 text-lg font-medium hover:bg-white hover:text-black"
+                onClick={() => setMintOpen(true)}
+              >
+                Tag your artwork to @tweetonium_xyz
+              </Button>
             </div>
           </div>
         )}
       </div>
+      <MintNFTModal open={mintOpen} onOpenChange={setMintOpen} />
     </main>
   );
 }
