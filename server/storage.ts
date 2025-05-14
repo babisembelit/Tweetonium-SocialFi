@@ -58,6 +58,16 @@ export class MemStorage implements IStorage {
       profileImage: "https://api.dicebear.com/7.x/initials/svg?seed=pixel_master",
     });
 
+    const artist4 = this.createUser({
+      username: "neon_walker",
+      profileImage: "https://api.dicebear.com/7.x/initials/svg?seed=neon_walker",
+    });
+
+    const artist5 = this.createUser({
+      username: "cosmos_dev",
+      profileImage: "https://api.dicebear.com/7.x/initials/svg?seed=cosmos_dev",
+    });
+
     // Sample wallets
     const wallet1 = this.createWallet({
       userId: artist1.id,
@@ -77,11 +87,23 @@ export class MemStorage implements IStorage {
       privateKey: "sample_private_key_3",
     });
 
+    const wallet4 = this.createWallet({
+      userId: artist4.id,
+      publicKey: "JH8FFBcQMpTrF6AAP5cw9Hn24JGSPrQZzzj4yrZkBL7F",
+      privateKey: "sample_private_key_4",
+    });
+
+    const wallet5 = this.createWallet({
+      userId: artist5.id,
+      publicKey: "6YJKtqPNEW2jdsTUgy7RLzbyDaJFvGpjZW1Adwde9MzA",
+      privateKey: "sample_private_key_5",
+    });
+
     // Sample NFTs - Featured
     this.createNFT({
       title: "Geometric Dreams",
       description: "An exploration of geometric shapes and neon colors in digital space. This piece represents the intersection of mathematics and art.",
-      imageUrl: "https://pixabay.com/get/g057222b06cbcb2ba68ac5a8e39d401d5635dfc2142a8bb81bbf8cdd149751e62de6c5cc2eda29a97b16c515fc367ee9b18d858519ebea45383d6018942fa6e9a_1280.jpg",
+      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Geometric Dreams" },
@@ -119,6 +141,61 @@ export class MemStorage implements IStorage {
       walletAddress: wallet1.publicKey,
       metadata: { name: "Dreamscape" },
       tokenId: "sample_token_4",
+      featured: 1,
+    });
+
+    this.createNFT({
+      title: "Neon Horizon",
+      description: "A vibrant landscape with glowing neon elements inspired by synthwave aesthetics and retro-futuristic dreams.",
+      imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist4.id,
+      walletAddress: wallet4.publicKey,
+      metadata: { name: "Neon Horizon" },
+      tokenId: "sample_token_9",
+      featured: 1,
+    });
+
+    this.createNFT({
+      title: "Cosmic Journey",
+      description: "An artistic interpretation of deep space with swirling galaxies and nebulae. A meditation on our place in the universe.",
+      imageUrl: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist5.id,
+      walletAddress: wallet5.publicKey,
+      metadata: { name: "Cosmic Journey" },
+      tokenId: "sample_token_10",
+      featured: 1,
+    });
+
+    this.createNFT({
+      title: "Digital Forest",
+      description: "A peaceful virtual forest with data trees and binary leaves. Nature reimagined through the lens of technology.",
+      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist3.id,
+      walletAddress: wallet3.publicKey,
+      metadata: { name: "Digital Forest" },
+      tokenId: "sample_token_11",
+      featured: 1,
+    });
+
+    this.createNFT({
+      title: "Abstract Emotions",
+      description: "A series of abstract shapes and colors representing the full spectrum of human emotions. Each viewer may find different meanings.",
+      imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist2.id,
+      walletAddress: wallet2.publicKey,
+      metadata: { name: "Abstract Emotions" },
+      tokenId: "sample_token_12",
+      featured: 1,
+    });
+
+    this.createNFT({
+      title: "Virtual Sculpture",
+      description: "A 3D sculpture that could never exist in physical space due to impossible geometries. Digital art breaks the rules of reality.",
+      imageUrl: "https://images.unsplash.com/photo-1559030623-0226b1241edd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist5.id,
+      walletAddress: wallet5.publicKey,
+      metadata: { name: "Virtual Sculpture" },
+      tokenId: "sample_token_13",
       featured: 1,
     });
 
@@ -164,6 +241,17 @@ export class MemStorage implements IStorage {
       walletAddress: wallet2.publicKey,
       metadata: { name: "Digital Collage #7" },
       tokenId: "sample_token_8",
+      featured: 0,
+    });
+
+    this.createNFT({
+      title: "Cybernetic Dreams",
+      description: "An exploration of the relationship between humans and technology in a digitized future where the boundaries blur.",
+      imageUrl: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist4.id,
+      walletAddress: wallet4.publicKey,
+      metadata: { name: "Cybernetic Dreams" },
+      tokenId: "sample_token_14",
       featured: 0,
     });
   }
