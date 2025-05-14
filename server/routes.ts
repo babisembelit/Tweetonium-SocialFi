@@ -175,6 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         walletAddress: nft.walletAddress,
         views: nft.views,
         transactions: nft.transactions,
+        floorPrice: nft.floorPrice || (Math.random() * 6 + 0.1).toFixed(2), // Generate random price between 0.1 and 6 SOL
       }));
       
       res.json(formattedNfts);
@@ -264,6 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         views: nft.views + 1, // Include the current view
         transactions: nft.transactions || `Minted on ${formatISO(nft.mintDate).split("T")[0]}`,
         metadata: nft.metadata,
+        floorPrice: nft.floorPrice || (Math.random() * 6 + 0.1).toFixed(2), // Generate random price between 0.1 and 6 SOL
       };
       
       res.json(formattedNft);

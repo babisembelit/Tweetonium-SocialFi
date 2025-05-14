@@ -110,6 +110,7 @@ export class MemStorage implements IStorage {
       metadata: { name: "Geometric Dreams" },
       tokenId: "sample_token_1",
       featured: 1,
+      floorPrice: "2.45",
     });
 
     this.createNFT({
@@ -121,6 +122,7 @@ export class MemStorage implements IStorage {
       metadata: { name: "Cyber City 2077" },
       tokenId: "sample_token_2",
       featured: 1,
+      floorPrice: "5.89",
     });
 
     this.createNFT({
@@ -143,6 +145,7 @@ export class MemStorage implements IStorage {
       metadata: { name: "Dreamscape" },
       tokenId: "sample_token_4",
       featured: 1,
+      floorPrice: "3.75",
     });
 
     this.createNFT({
