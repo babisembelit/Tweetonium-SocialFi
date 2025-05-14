@@ -10,6 +10,11 @@ export default function MyNFT() {
   const { data: nfts, isLoading } = useQuery({
     queryKey: ["/api/my-nfts"],
   });
+  
+  const handlePostToX = () => {
+    const postText = encodeURIComponent("Check out my artwork! @tweetonium_xyz #NFT #Web3");
+    window.open(`https://twitter.com/intent/tweet?text=${postText}`, "_blank");
+  };
 
   return (
     <main className="flex-grow">
@@ -45,7 +50,7 @@ export default function MyNFT() {
                 variant="default" 
                 size="lg" 
                 className="rounded-full px-6 py-6 text-lg font-medium bg-purple-600 hover:bg-purple-700 text-white"
-                onClick={() => setMintOpen(true)}
+                onClick={handlePostToX}
               >
                 Tag your artwork to @tweetonium_xyz
               </Button>

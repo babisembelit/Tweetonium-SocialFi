@@ -11,6 +11,11 @@ export default function Home() {
   const [connectOpen, setConnectOpen] = useState(false);
   const [mintOpen, setMintOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
+  
+  const handlePostToX = () => {
+    const postText = encodeURIComponent("Check out my artwork! @tweetonium_xyz #NFT #Web3");
+    window.open(`https://twitter.com/intent/tweet?text=${postText}`, "_blank");
+  };
 
   const { data: featuredNfts, isLoading: featuredLoading } = useQuery<NFT[]>({
     queryKey: ["/api/explore", { tab: "featured" }],
@@ -63,7 +68,7 @@ export default function Home() {
           variant="default" 
           size="lg" 
           className="rounded-full px-6 py-6 text-lg font-medium bg-purple-600 hover:bg-purple-700 text-white"
-          onClick={() => setMintOpen(true)}
+          onClick={handlePostToX}
         >
           Tag your artwork to @tweetonium_xyz
         </Button>
