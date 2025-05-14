@@ -70,20 +70,21 @@ export default function Navbar() {
           </a>
         </Link>
 
-        {isAuthenticated && (
-          <div className="ml-8 space-x-6 hidden md:flex">
+        <div className="ml-8 space-x-6 hidden md:flex">
+          <Link href="/explore">
+            <a className={`hover:text-gray-300 transition-colors ${location === "/explore" ? "font-medium" : ""}`}>
+              Explore
+            </a>
+          </Link>
+          
+          {isAuthenticated && (
             <Link href="/my-nfts">
               <a className={`hover:text-gray-300 transition-colors ${location === "/my-nfts" ? "font-medium" : ""}`}>
                 My NFTs
               </a>
             </Link>
-            <Link href="/explore">
-              <a className={`hover:text-gray-300 transition-colors ${location === "/explore" ? "font-medium" : ""}`}>
-                Explore
-              </a>
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div>
