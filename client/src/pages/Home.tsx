@@ -63,7 +63,7 @@ export default function Home() {
           className="rounded-full border-2 border-white px-6 py-6 text-lg font-medium hover:bg-white hover:text-black"
           onClick={() => setMintOpen(true)}
         >
-          Mint NFT with tag @tweetonium_xyz
+          Tag your artwork to @tweetonium_xyz
         </Button>
         
         <MintNFTModal open={mintOpen} onOpenChange={setMintOpen} />
