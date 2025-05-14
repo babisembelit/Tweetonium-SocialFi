@@ -15,7 +15,7 @@ function Router() {
       <Navbar />
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/my-nft" component={MyNFT} />
+        <Route path="/my-nfts" component={MyNFT} />
         <Route path="/explore" component={Explore} />
         <Route component={NotFound} />
       </Switch>

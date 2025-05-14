@@ -72,9 +72,9 @@ export default function Navbar() {
 
         {isAuthenticated && (
           <div className="ml-8 space-x-6 hidden md:flex">
-            <Link href="/my-nft">
-              <a className={`hover:text-gray-300 transition-colors ${location === "/my-nft" ? "font-medium" : ""}`}>
-                My NFT
+            <Link href="/my-nfts">
+              <a className={`hover:text-gray-300 transition-colors ${location === "/my-nfts" ? "font-medium" : ""}`}>
+                My NFTs
               </a>
             </Link>
             <Link href="/explore">
