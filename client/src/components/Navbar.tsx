@@ -29,8 +29,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Copy, X, ExternalLink } from "lucide-react";
+import { LogOut, Copy, X, ExternalLink, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,6 +75,7 @@ export default function Navbar() {
           </a>
         </Link>
 
+        {/* Desktop Navigation */}
         <div className="ml-8 space-x-6 hidden md:flex">
           <Link href="/explore">
             <a className={`hover:text-gray-300 transition-colors ${location === "/explore" ? "font-medium" : ""}`}>
@@ -85,6 +91,37 @@ export default function Navbar() {
             </Link>
           )}
         </div>
+        
+        {/* Mobile Menu Button */}
+        <Sheet>
+          <SheetTrigger asChild className="md:hidden ml-4">
+            <Button variant="ghost" size="icon" className="text-white">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="bg-secondary border-r border-gray-800 text-white w-[250px] pt-10">
+            <nav className="flex flex-col gap-4">
+              <Link href="/">
+                <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}>
+                  Home
+                </a>
+              </Link>
+              <Link href="/explore">
+                <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}>
+                  Explore
+                </a>
+              </Link>
+              {isAuthenticated && (
+                <Link href="/my-nfts">
+                  <a className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}>
+                    My NFTs
+                  </a>
+                </Link>
+              )}
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
 
       <div>
