@@ -66,6 +66,12 @@ export default function Navbar() {
     }
   };
 
+  const [sheetOpen, setSheetOpen] = useState(false);
+  
+  const closeSheet = () => {
+    setSheetOpen(false);
+  };
+  
   return (
     <nav className="px-4 py-3 md:px-8 flex justify-between items-center border-b border-gray-800">
       <div className="flex items-center">
@@ -93,7 +99,7 @@ export default function Navbar() {
         </div>
         
         {/* Mobile Menu Button */}
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild className="md:hidden ml-4">
             <Button variant="ghost" size="icon" className="text-white">
               <Menu className="h-5 w-5" />
@@ -101,36 +107,34 @@ export default function Navbar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="bg-secondary border-r border-gray-800 text-white w-[250px] pt-10">
-            {({ setOpen }) => (
-              <nav className="flex flex-col gap-4">
-                <Link href="/">
+            <nav className="flex flex-col gap-4">
+              <Link href="/">
+                <a 
+                  className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}
+                  onClick={closeSheet}
+                >
+                  Home
+                </a>
+              </Link>
+              <Link href="/explore">
+                <a 
+                  className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}
+                  onClick={closeSheet}
+                >
+                  Explore
+                </a>
+              </Link>
+              {isAuthenticated && (
+                <Link href="/my-nfts">
                   <a 
-                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}
-                    onClick={() => setOpen(false)}
+                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}
+                    onClick={closeSheet}
                   >
-                    Home
+                    My NFTs
                   </a>
                 </Link>
-                <Link href="/explore">
-                  <a 
-                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    Explore
-                  </a>
-                </Link>
-                {isAuthenticated && (
-                  <Link href="/my-nfts">
-                    <a 
-                      className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}
-                      onClick={() => setOpen(false)}
-                    >
-                      My NFTs
-                    </a>
-                  </Link>
-                )}
-              </nav>
-            )}
+              )}
+            </nav>
           </SheetContent>
         </Sheet>
       </div>
