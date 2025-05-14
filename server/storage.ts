@@ -22,12 +22,13 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private usersData: Map<number, User>;
-  private walletsData: Map<number, Wallet>;
-  private nftsData: Map<number, NFT>;
-  private currentUserId: number;
-  private currentWalletId: number;
-  private currentNftId: number;
+  // Making these properties protected to allow our reset function to access them
+  protected usersData: Map<number, User>;
+  protected walletsData: Map<number, Wallet>;
+  protected nftsData: Map<number, NFT>;
+  protected currentUserId: number;
+  protected currentWalletId: number;
+  protected currentNftId: number;
 
   constructor() {
     this.usersData = new Map();
@@ -41,7 +42,7 @@ export class MemStorage implements IStorage {
     this.initSampleData();
   }
 
-  private initSampleData() {
+  initSampleData() {
     // Sample artists
     const artist1 = this.createUser({
       username: "artist_one",
@@ -309,18 +310,18 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async createNFT(insertNft: InsertNft): Promise<NFT> {
+  async createNFT(insertNft: InsertNft & { featured?: number }): Promise<NFT> {
     const id = this.currentNftId++;
     const mintDate = new Date();
     const views = 0;
-    const featured = 0;
+    const featured = (insertNft as any).featured ?? 0;
     const nft: NFT = { 
       ...insertNft, 
       id, 
       mintDate, 
       views, 
       featured, 
-      isMinted: insertNft.isMinted ?? 0 
+      isMinted: (insertNft as any).isMinted ?? 0 
     };
     this.nftsData.set(id, nft);
     return nft;
@@ -347,4 +348,40 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Extend the MemStorage class to add reset functionality
+class ResetableMemStorage extends MemStorage {
+  async resetData() {
+    console.log("Reinitializing sample data...");
+    // Clear existing data
+    this.usersData.clear();
+    this.walletsData.clear();
+    this.nftsData.clear();
+    
+    // Reset IDs
+    this.currentUserId = 1;
+    this.currentWalletId = 1;
+    this.currentNftId = 1;
+    
+    // Reinitialize
+    this.initSampleData();
+    
+    // Check featured NFTs
+    const featuredNfts = await this.getFeaturedNFTs();
+    console.log(`After reinitialization: Found ${featuredNfts.length} featured NFTs`);
+    return featuredNfts.length;
+  }
+}
+
+// Initialize storage with sample data using the resettable storage
+const storage = new ResetableMemStorage();
+
+// Reset the data to ensure it's properly initialized
+(async () => {
+  try {
+    await (storage as ResetableMemStorage).resetData();
+  } catch (error) {
+    console.error("Error initializing storage:", error);
+  }
+})();
+
+export { storage };

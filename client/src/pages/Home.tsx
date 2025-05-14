@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import ConnectXModal from "@/components/ConnectXModal";
 import MintNFTModal from "@/components/MintNFTModal";
-import NFTCard from "@/components/NFTCard";
+import NFTCard, { NFT } from "@/components/NFTCard";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
@@ -12,12 +12,12 @@ export default function Home() {
   const [mintOpen, setMintOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
 
-  const { data: featuredNfts, isLoading: featuredLoading } = useQuery({
+  const { data: featuredNfts, isLoading: featuredLoading } = useQuery<NFT[]>({
     queryKey: ["/api/explore", { tab: "featured" }],
     enabled: isAuthenticated,
   });
 
-  const { data: newNfts, isLoading: newLoading } = useQuery({
+  const { data: newNfts, isLoading: newLoading } = useQuery<NFT[]>({
     queryKey: ["/api/explore", { tab: "new" }],
     enabled: isAuthenticated,
   });
