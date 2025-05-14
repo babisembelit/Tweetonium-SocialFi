@@ -21,7 +21,7 @@ export default function Logo({ className, showBeta = true, size = "md" }: LogoPr
 
   return (
     <div className={cn("flex items-center", className)}>
-      <h1 className={cn("tiny5-font font-bold tracking-widest", sizeClasses[size])}>
+      <h1 className={cn("pixel-font font-bold tracking-widest", sizeClasses[size])}>
         TWEETONIUM
       </h1>
       {showBeta && (
