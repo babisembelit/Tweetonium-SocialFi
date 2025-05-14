@@ -128,33 +128,33 @@ export default function MintNFTModal({ open, onOpenChange }: MintNFTModalProps) 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md bg-secondary border border-gray-800 text-white">
-          <DialogClose className="absolute right-4 top-4 text-gray-400 hover:text-white">
+        <DialogContent className="w-[90%] max-w-md mx-auto bg-secondary border border-gray-800 text-white p-4 sm:p-6">
+          <DialogClose className="absolute right-3 top-3 text-gray-400 hover:text-white">
             <X className="h-5 w-5" />
           </DialogClose>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-medium mb-2">Mint Your NFT</DialogTitle>
-            <DialogDescription className="text-gray-300">
+            <DialogTitle className="text-xl sm:text-2xl font-medium mb-2">Mint Your NFT</DialogTitle>
+            <DialogDescription className="text-gray-300 text-sm sm:text-base">
               Upload your artwork and mint it as an NFT on Solana
             </DialogDescription>
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>NFT Title</FormLabel>
+                    <FormLabel className="text-sm">NFT Title</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="My Awesome Artwork"
-                        className="bg-black border-gray-800 text-white"
+                        className="bg-black border-gray-800 text-white text-sm"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs sm:text-sm" />
                   </FormItem>
                 )}
               />
@@ -164,16 +164,16 @@ export default function MintNFTModal({ open, onOpenChange }: MintNFTModalProps) 
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description (optional)</FormLabel>
+                    <FormLabel className="text-sm">Description (optional)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Tell us about your artwork..."
-                        className="bg-black border-gray-800 text-white"
+                        className="bg-black border-gray-800 text-white text-sm"
                         rows={3}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs sm:text-sm" />
                   </FormItem>
                 )}
               />
@@ -183,13 +183,13 @@ export default function MintNFTModal({ open, onOpenChange }: MintNFTModalProps) 
                 name="image"
                 render={() => (
                   <FormItem>
-                    <FormLabel>Upload Artwork</FormLabel>
+                    <FormLabel className="text-sm">Upload Artwork</FormLabel>
                     <div 
-                      className="border-2 border-dashed border-gray-700 rounded-lg p-4 text-center cursor-pointer"
+                      className="border-2 border-dashed border-gray-700 rounded-lg p-3 sm:p-4 text-center cursor-pointer"
                       onClick={() => document.getElementById("nft-image")?.click()}
                     >
                       {imagePreview ? (
-                        <div className="relative w-full aspect-square max-h-48 mx-auto">
+                        <div className="relative w-full aspect-square max-h-36 sm:max-h-48 mx-auto">
                           <img 
                             src={imagePreview} 
                             alt="NFT Preview" 
@@ -198,8 +198,8 @@ export default function MintNFTModal({ open, onOpenChange }: MintNFTModalProps) 
                         </div>
                       ) : (
                         <>
-                          <Upload className="h-10 w-10 mx-auto mb-2 text-gray-400" />
-                          <p className="text-sm text-gray-400">Drag and drop your image here or click to browse</p>
+                          <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-2 text-gray-400" />
+                          <p className="text-xs sm:text-sm text-gray-400">Click to upload your image</p>
                         </>
                       )}
                       <input 
@@ -210,22 +210,22 @@ export default function MintNFTModal({ open, onOpenChange }: MintNFTModalProps) 
                         onChange={handleFileChange}
                       />
                     </div>
-                    <FormMessage />
+                    <FormMessage className="text-xs sm:text-sm" />
                   </FormItem>
                 )}
               />
               
               <Button
                 type="submit"
-                className="w-full bg-accent hover:bg-opacity-90 text-white"
+                className="w-full bg-accent hover:bg-opacity-90 text-white mt-2"
                 disabled={mintMutation.isPending}
               >
-                {mintMutation.isPending ? "Minting..." : "Mint NFT"}
+                <span className="text-sm">{mintMutation.isPending ? "Minting..." : "Mint NFT"}</span>
               </Button>
             </form>
           </Form>
 
-          <p className="text-xs text-gray-400 text-center mt-2">
+          <p className="text-xs text-gray-400 text-center mt-4">
             This will simulate posting to X with the @tweetonium_xyz tag
             <br />and mint your NFT on Solana Devnet
           </p>

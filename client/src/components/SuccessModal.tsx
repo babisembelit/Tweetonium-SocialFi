@@ -42,52 +42,52 @@ export default function SuccessModal({ open, onOpenChange, nft }: SuccessModalPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-secondary border border-gray-800 text-white">
-        <DialogClose className="absolute right-4 top-4 text-gray-400 hover:text-white">
+      <DialogContent className="w-[90%] max-w-md mx-auto bg-secondary border border-gray-800 text-white p-4 sm:p-6">
+        <DialogClose className="absolute right-3 top-3 text-gray-400 hover:text-white">
           <X className="h-5 w-5" />
         </DialogClose>
         
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500 mb-4">
-            <Check className="h-8 w-8 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-green-500 mb-4">
+            <Check className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
           </div>
           
           <DialogHeader className="mb-4">
-            <DialogTitle className="text-2xl font-medium text-center">NFT Minted Successfully!</DialogTitle>
-            <DialogDescription className="text-gray-300 text-center">
+            <DialogTitle className="text-xl sm:text-2xl font-medium text-center">NFT Minted Successfully!</DialogTitle>
+            <DialogDescription className="text-gray-300 text-sm sm:text-base text-center">
               Your artwork has been successfully minted as an NFT on the Solana blockchain.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="border border-gray-800 rounded-lg p-4 mb-6 text-left">
-            <div className="flex justify-between mb-2">
+          <div className="border border-gray-800 rounded-lg p-3 sm:p-4 mb-5 sm:mb-6 text-left">
+            <div className="flex justify-between mb-2 text-sm">
               <span className="text-gray-400">NFT Title</span>
-              <span>{nft.title}</span>
+              <span className="text-right max-w-[60%] break-words">{nft.title}</span>
             </div>
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 text-sm">
               <span className="text-gray-400">Wallet</span>
               <span>{shortenAddress(nft.walletAddress)}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-sm">
               <span className="text-gray-400">Mint Date</span>
               <span>{nft.mintDate}</span>
             </div>
           </div>
           
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0">
             <Button 
               variant="default" 
-              className="flex-1" 
+              className="sm:flex-1" 
               onClick={handleViewNFT}
             >
-              View NFT
+              <span className="text-sm">View NFT</span>
             </Button>
             <Button 
               variant="outline" 
-              className="flex-1" 
+              className="sm:flex-1" 
               onClick={handleShareTwitter}
             >
-              Share on X
+              <span className="text-sm">Share on X</span>
             </Button>
           </div>
         </div>

@@ -184,26 +184,26 @@ export default function Navbar() {
 
             {/* Wallet Details Dialog */}
             <Dialog open={showWalletDetails} onOpenChange={setShowWalletDetails}>
-              <DialogContent className="sm:max-w-md bg-secondary border border-gray-800 text-white">
-                <DialogClose className="absolute right-4 top-4 text-gray-400 hover:text-white">
+              <DialogContent className="w-[90%] max-w-md mx-auto bg-secondary border border-gray-800 text-white p-4 sm:p-6">
+                <DialogClose className="absolute right-3 top-3 text-gray-400 hover:text-white">
                   <X className="h-5 w-5" />
                 </DialogClose>
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-medium mb-2">Wallet Details</DialogTitle>
-                  <DialogDescription className="text-gray-300">
+                  <DialogTitle className="text-xl sm:text-2xl font-medium mb-2">Wallet Details</DialogTitle>
+                  <DialogDescription className="text-gray-300 text-sm sm:text-base">
                     Your Solana wallet on the Devnet network.
                   </DialogDescription>
                 </DialogHeader>
                 
                 <div className="py-4">
-                  <div className="mb-6">
+                  <div className="mb-4 sm:mb-6">
                     <h4 className="text-sm text-gray-400 mb-1">Wallet Address</h4>
-                    <div className="flex items-center justify-between bg-black p-3 rounded-lg border border-gray-800 break-all">
-                      <span className="text-sm">{wallet?.publicKey}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center bg-black p-2 sm:p-3 rounded-lg border border-gray-800">
+                      <span className="text-xs sm:text-sm break-all mb-2 sm:mb-0">{wallet?.publicKey}</span>
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="ml-2 text-gray-400 hover:text-white"
+                        className="ml-auto text-gray-400 hover:text-white"
                         onClick={copyWalletAddress}
                       >
                         <Copy className="h-4 w-4" />
@@ -211,14 +211,14 @@ export default function Navbar() {
                     </div>
                   </div>
                   
-                  <div className="mb-6">
+                  <div className="mb-4 sm:mb-6">
                     <h4 className="text-sm text-gray-400 mb-1">Network</h4>
-                    <p className="text-sm bg-black p-3 rounded-lg border border-gray-800">Solana Devnet</p>
+                    <p className="text-xs sm:text-sm bg-black p-2 sm:p-3 rounded-lg border border-gray-800">Solana Devnet</p>
                   </div>
                   
                   <div className="mb-4">
                     <h4 className="text-sm text-gray-400 mb-1">Balance</h4>
-                    <p className="text-sm bg-black p-3 rounded-lg border border-gray-800">1.0 SOL (simulated)</p>
+                    <p className="text-xs sm:text-sm bg-black p-2 sm:p-3 rounded-lg border border-gray-800">1.0 SOL (simulated)</p>
                   </div>
 
                   <Button 
@@ -227,7 +227,7 @@ export default function Navbar() {
                     onClick={openInSolanaExplorer}
                   >
                     <ExternalLink className="mr-2 h-4 w-4" />
-                    View on Solana Explorer
+                    <span className="text-sm">View on Solana Explorer</span>
                   </Button>
                 </div>
               </DialogContent>
@@ -235,19 +235,19 @@ export default function Navbar() {
 
             {/* Logout Confirmation Dialog */}
             <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
-              <AlertDialogContent className="bg-secondary border border-gray-800 text-white">
+              <AlertDialogContent className="w-[90%] max-w-md mx-auto bg-secondary border border-gray-800 text-white p-4 sm:p-6">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-400">
+                  <AlertDialogTitle className="text-xl sm:text-2xl font-medium">Are you sure you want to sign out?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-400 text-sm sm:text-base">
                     You will need to connect your X account again to access your NFTs.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border border-gray-700 text-white hover:bg-gray-800 hover:text-white">
+                <AlertDialogFooter className="flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-4 pt-4">
+                  <AlertDialogCancel className="w-full sm:w-auto bg-transparent border border-gray-700 text-white hover:bg-gray-800 hover:text-white">
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction 
-                    className="bg-red-600 text-white hover:bg-red-700"
+                    className="w-full sm:w-auto bg-red-600 text-white hover:bg-red-700"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

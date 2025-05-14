@@ -86,33 +86,33 @@ export default function ConnectXModal({ open, onOpenChange }: ConnectXModalProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-secondary border border-gray-800 text-white">
-        <DialogClose className="absolute right-4 top-4 text-gray-400 hover:text-white">
+      <DialogContent className="w-[90%] max-w-md mx-auto bg-secondary border border-gray-800 text-white p-4 sm:p-6">
+        <DialogClose className="absolute right-3 top-3 text-gray-400 hover:text-white">
           <X className="h-5 w-5" />
         </DialogClose>
         <DialogHeader>
-          <DialogTitle className="text-2xl font-medium mb-2">Connect to X (Twitter)</DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogTitle className="text-xl sm:text-2xl font-medium mb-2">Connect to X (Twitter)</DialogTitle>
+          <DialogDescription className="text-gray-300 text-sm sm:text-base">
             Connect your X account to mint NFTs and showcase your digital artwork.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-sm">Username</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="@username"
-                      className="bg-black border-gray-800 text-white"
+                      className="bg-black border-gray-800 text-white text-sm"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
@@ -121,30 +121,30 @@ export default function ConnectXModal({ open, onOpenChange }: ConnectXModalProps
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-sm">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       placeholder="••••••••"
-                      className="bg-black border-gray-800 text-white"
+                      className="bg-black border-gray-800 text-white text-sm"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
             <Button
               type="submit"
-              className="w-full bg-[#1DA1F2] hover:bg-opacity-90 text-white"
+              className="w-full bg-[#1DA1F2] hover:bg-opacity-90 text-white mt-2"
               disabled={loading}
             >
-              {loading ? "Connecting..." : "Log in with X"}
+              <span className="text-sm">{loading ? "Connecting..." : "Log in with X"}</span>
             </Button>
           </form>
         </Form>
 
-        <p className="text-xs text-gray-400 text-center mt-2">
+        <p className="text-xs text-gray-400 text-center mt-4">
           This is a simulated login for demonstration purposes.
           <br />No actual X credentials will be stored.
         </p>
