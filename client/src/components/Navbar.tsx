@@ -14,13 +14,6 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -30,7 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Wallet, Copy, X, ExternalLink } from "lucide-react";
+import { LogOut, Copy, X, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Navbar() {
@@ -101,40 +94,23 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-2 border border-gray-800 rounded-full px-3 py-1.5 cursor-pointer hover:bg-gray-900 transition-colors">
-                  <span 
-                    className="text-sm hover:underline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowWalletDetails(true);
-                    }}
-                  >
-                    {shortenAddress(wallet?.publicKey || "")}
-                  </span>
-                  <span className="text-gray-400">|</span>
-                  <span className="text-sm">@{user?.username}</span>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-secondary border border-gray-800 text-white">
-                <DropdownMenuItem 
-                  className="cursor-pointer hover:bg-gray-800 focus:bg-gray-800"
-                  onClick={() => setShowWalletDetails(true)}
-                >
-                  <Wallet className="mr-2 h-4 w-4" />
-                  <span>Wallet Details</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-800" />
-                <DropdownMenuItem 
-                  className="cursor-pointer hover:bg-gray-800 focus:bg-gray-800"
-                  onClick={() => setShowLogoutConfirm(true)}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign Out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center space-x-2 border border-gray-800 rounded-full px-3 py-1.5">
+              {/* Wallet Address - Opens Wallet Details */}
+              <button 
+                className="text-sm hover:underline"
+                onClick={() => setShowWalletDetails(true)}
+              >
+                {shortenAddress(wallet?.publicKey || "")}
+              </button>
+              <span className="text-gray-400">|</span>
+              {/* Twitter Username - Opens Sign Out */}
+              <button 
+                className="text-sm hover:underline"
+                onClick={() => setShowLogoutConfirm(true)}
+              >
+                @{user?.username}
+              </button>
+            </div>
 
             {/* Wallet Details Dialog */}
             <Dialog open={showWalletDetails} onOpenChange={setShowWalletDetails}>
@@ -204,6 +180,7 @@ export default function Navbar() {
                     className="bg-red-600 text-white hover:bg-red-700"
                     onClick={handleLogout}
                   >
+                    <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
                   </AlertDialogAction>
                 </AlertDialogFooter>
