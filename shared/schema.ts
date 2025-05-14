@@ -31,6 +31,7 @@ export const nfts = pgTable("nfts", {
   featured: integer("featured").default(0), // 0 = not featured, 1 = featured
   views: integer("views").default(0),
   transactions: text("transactions"),
+  floorPrice: text("floor_price"), // Price in SOL for the NFT
 });
 
 // Insert schemas

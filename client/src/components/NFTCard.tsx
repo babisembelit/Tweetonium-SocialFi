@@ -13,6 +13,7 @@ export interface NFT {
   walletAddress: string;
   views?: number;
   transactions?: string;
+  floorPrice?: string;
 }
 
 interface NFTCardProps {
@@ -35,7 +36,14 @@ export default function NFTCard({ nft, isUserNFT = false }: NFTCardProps) {
             </AspectRatio>
           </div>
           <CardContent className="p-4">
-            <h4 className="font-medium mb-1 truncate">{nft.title}</h4>
+            <div className="flex justify-between items-start mb-1">
+              <h4 className="font-medium truncate pr-2">{nft.title}</h4>
+              {nft.floorPrice && (
+                <div className="text-sm font-semibold text-purple-500">
+                  {nft.floorPrice} SOL
+                </div>
+              )}
+            </div>
             {isUserNFT ? (
               <p className="text-sm text-gray-400">Minted on {nft.mintDate}</p>
             ) : (

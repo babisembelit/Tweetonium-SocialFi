@@ -223,6 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           walletAddress: nft.walletAddress,
           views: nft.views,
           transactions: nft.transactions,
+          floorPrice: nft.floorPrice || (Math.random() * 6 + 0.1).toFixed(2), // Generate random price between 0.1 and 6 SOL
         };
       }));
       

@@ -30,10 +30,19 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
         </div>
         <div className="md:w-1/2 p-4 sm:p-6">
           <DialogHeader className="text-left mb-3 md:mb-4">
-            <DialogTitle className="text-xl sm:text-2xl font-medium">{nft.title}</DialogTitle>
-            <DialogDescription className="text-gray-400 text-sm">
-              {isUserNFT ? `Minted on ${nft.mintDate}` : nft.creator}
-            </DialogDescription>
+            <div className="flex justify-between items-start">
+              <div>
+                <DialogTitle className="text-xl sm:text-2xl font-medium">{nft.title}</DialogTitle>
+                <DialogDescription className="text-gray-400 text-sm">
+                  {isUserNFT ? `Minted on ${nft.mintDate}` : nft.creator}
+                </DialogDescription>
+              </div>
+              {nft.floorPrice && (
+                <div className="text-lg font-semibold text-purple-500 mt-1">
+                  {nft.floorPrice} SOL
+                </div>
+              )}
+            </div>
           </DialogHeader>
           
           <div className="mb-4 md:mb-6">
