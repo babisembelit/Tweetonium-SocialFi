@@ -19,14 +19,12 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
     <DialogContent className="w-[95%] max-w-4xl mx-auto bg-secondary border border-gray-800 text-white p-0 overflow-hidden">
       {/* Removed redundant close icon - DialogClose is already provided by the Dialog component */}
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/2">
-          <AspectRatio ratio={1 / 1}>
-            <img 
-              src={nft.image} 
-              alt={nft.title}
-              className="w-full h-full object-cover"
-            />
-          </AspectRatio>
+        <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative h-auto" style={{ minHeight: '300px' }}>
+          <img 
+            src={nft.image} 
+            alt={nft.title}
+            className="max-w-full max-h-[80vh] md:max-h-[500px] object-contain p-4"
+          />
         </div>
         <div className="md:w-1/2 p-4 sm:p-6">
           <DialogHeader className="text-left mb-3 md:mb-4">
