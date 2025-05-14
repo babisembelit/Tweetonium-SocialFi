@@ -14,6 +14,12 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -103,13 +109,24 @@ export default function Navbar() {
                 {shortenAddress(wallet?.publicKey || "")}
               </button>
               <span className="text-gray-400">|</span>
-              {/* Twitter Username - Opens Sign Out */}
-              <button 
-                className="text-sm hover:underline"
-                onClick={() => setShowLogoutConfirm(true)}
-              >
-                @{user?.username}
-              </button>
+              
+              {/* Twitter Username - Opens Dropdown Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="text-sm hover:underline">
+                    @{user?.username}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-secondary border border-gray-800 text-white">
+                  <DropdownMenuItem 
+                    className="cursor-pointer hover:bg-gray-800 focus:bg-gray-800"
+                    onClick={() => setShowLogoutConfirm(true)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Wallet Details Dialog */}
