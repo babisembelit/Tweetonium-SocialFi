@@ -60,7 +60,7 @@ export default function Home() {
     <main className="flex-grow">
       {/* Hero Section */}
       <section className="py-12 md:py-16 px-4 md:px-8 text-center">
-        <h2 className="text-3xl md:text-4xl mb-6 pixel-font">MINT NFT</h2>
+        <h2 className="text-3xl md:text-4xl mb-6 tiny5-font">MINT NFT</h2>
         <p className="mb-8 max-w-md mx-auto">
           Create X post of your artwork and tag @tweetonium_xyz to transform it into NFTs on the Solana Blockchain.
         </p>
@@ -79,7 +79,7 @@ export default function Home() {
       {/* Featured NFTs Section */}
       {featuredNfts?.length > 0 && (
         <section className="py-8 px-4 md:px-8">
-          <h3 className="text-2xl mb-6 font-medium">Featured NFTs</h3>
+          <h3 className="text-2xl mb-6 font-medium tiny5-font">FEATURED NFTS</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {featuredNfts.map((nft: any) => (
@@ -92,7 +92,7 @@ export default function Home() {
       {/* New NFTs Section */}
       {newNfts?.length > 0 && (
         <section className="py-8 px-4 md:px-8">
-          <h3 className="text-2xl mb-6 font-medium">New NFTs</h3>
+          <h3 className="text-2xl mb-6 font-medium tiny5-font">NEW NFTS</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {newNfts.map((nft: any) => (

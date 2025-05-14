@@ -19,7 +19,7 @@ export default function MyNFT() {
   return (
     <main className="flex-grow">
       <div className="py-8 px-4 md:px-8">
-        <h2 className="text-3xl mb-8 pixel-font">MY NFTS</h2>
+        <h2 className="text-3xl mb-8 tiny5-font">MY NFTS</h2>
         
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

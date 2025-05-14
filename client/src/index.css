@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Tiny5:wght@400;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/pixel-emulator');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.cdnfonts.com/css/pixel-emulator');
 
 :root {
   --background: 0 0% 0%;
@@ -61,6 +62,11 @@
 
 .pixel-font {
   font-family: 'Pixel Emulator', monospace;
+  letter-spacing: 1px;
+}
+
+.tiny5-font {
+  font-family: 'Tiny5', sans-serif;
   letter-spacing: 1px;
 }
 
