@@ -32,13 +32,13 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
         
         {/* Right side - Info */}
         <div className="md:w-1/2 p-5 sm:p-6 flex flex-col">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                {nft.title}
-              </h2>
-              
-              <div className="flex items-center mt-1 text-gray-400">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              {nft.title}
+            </h2>
+            
+            <div className="flex justify-between items-center mt-1">
+              <div className="flex items-center text-gray-400">
                 <span className="text-sm font-medium">{nft.creator}</span>
                 {/* Add a blue verification badge to simulate the verified creator */}
                 <span className="text-blue-500 ml-1">
@@ -47,11 +47,11 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
                   </svg>
                 </span>
               </div>
+              
+              <Button variant="outline" size="icon" className="h-9 w-9 rounded-full mr-4">
+                <Heart className="h-4 w-4" />
+              </Button>
             </div>
-            
-            <Button variant="outline" size="icon" className="h-9 w-9 rounded-full">
-              <Heart className="h-4 w-4" />
-            </Button>
           </div>
           
           {/* Market data section */}
