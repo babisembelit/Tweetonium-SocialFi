@@ -18,9 +18,6 @@ interface NFTModalProps {
 }
 
 export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
-  // Format the token ID as a display-friendly string (e.g. "#2350")
-  const formattedTokenId = nft.tokenId ? `#${nft.tokenId}` : "#1";
-  
   return (
     <DialogContent className="w-[95%] max-w-5xl mx-auto bg-secondary border border-gray-800 text-white p-0 overflow-hidden">
       <div className="flex flex-col md:flex-row">
@@ -38,7 +35,7 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                {nft.title} {formattedTokenId}
+                {nft.title}
               </h2>
               
               <div className="flex items-center mt-1 text-gray-400">
@@ -58,17 +55,11 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
           </div>
           
           {/* Market data section */}
-          <div className="grid grid-cols-3 gap-4 mb-6 border-b border-gray-800 pb-6">
+          <div className="grid grid-cols-2 gap-4 mb-6 border-b border-gray-800 pb-6">
             <div>
               <div className="text-xs text-gray-400 uppercase">Top Offer</div>
               <div className="text-md font-semibold mt-1">
                 {nft.floorPrice || "0.0"} SOL
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-400 uppercase">Token ID</div>
-              <div className="text-md font-semibold mt-1">
-                {nft.tokenId || "1"}
               </div>
             </div>
             <div>
@@ -174,10 +165,6 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
                     <div className="flex justify-between">
                       <span className="text-gray-400">Creator</span>
                       <span>{nft.creator}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Token ID</span>
-                      <span>{nft.tokenId || "1"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Wallet</span>
