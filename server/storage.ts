@@ -104,7 +104,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Geometric Dreams",
       description: "An exploration of geometric shapes and neon colors in digital space. This piece represents the intersection of mathematics and art.",
-      imageUrl: "https://images.unsplash.com/photo-1614850523459-c2f4c699c32a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Geometric Dreams" },
@@ -137,7 +137,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Dreamscape",
       description: "A surreal digital painting featuring dreamlike elements and flowing composition. Enter a world where reality bends to imagination.",
-      imageUrl: "https://images.unsplash.com/photo-1633186710895-309db2ddaf69?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Dreamscape" },
