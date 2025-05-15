@@ -22,9 +22,15 @@ interface TwitterAPIConfig {
 const getTwitterConfig = (): TwitterAPIConfig => {
   const bearerToken = process.env.TWITTER_BEARER_TOKEN;
   
-  // For development purposes, force using mock data to test our new extraction code
-  log('Using mock Twitter data for testing', 'warning');
-  return { bearerToken: 'DUMMY_TOKEN_FOR_DEVELOPMENT' };
+  // Use real Twitter API if token is available
+  
+  if (!bearerToken) {
+    log('Twitter API bearer token not configured', 'warning');
+    // Return a dummy token for development if missing
+    return { bearerToken: 'DUMMY_TOKEN_FOR_DEVELOPMENT' };
+  }
+  
+  return { bearerToken: bearerToken || '' };
 };
 
 /**
@@ -88,64 +94,33 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
 
 /**
  * Extract title and description from tweet text
- * Parses for patterns like #title, Title:, Desc: or uses smart extraction
+ * Parses for patterns like #title or uses smart extraction
  */
 function extractMetadataFromText(text: string): { title: string, description: string } {
-  // Remove the @tweetonium_xyz mention and URLs (they often break pattern matching)
-  const cleanText = text
-    .replace(/@tweetonium_xyz/gi, '')
-    .replace(/https?:\/\/\S+/g, '')
-    .trim();
+  // Remove the @tweetonium_xyz mention
+  const cleanText = text.replace(/@tweetonium_xyz/gi, '').trim();
   
-  // PRIORITY 1: Check for "Title:" format (most explicit)
-  const explicitTitleMatch = cleanText.match(/Title:\s*([^\n]+)/i);
-  const explicitDescMatch = cleanText.match(/Desc(?:ription)?:\s*([^\n]+(?:\n[^@#]+)*)/i);
+  // Check for explicit title/description format
+  const titleMatch = cleanText.match(/#title\s+([^\n#]+)/i);
+  const descMatch = cleanText.match(/#description\s+([^\n#]+)/i);
   
-  if (explicitTitleMatch) {
-    // We found explicit Title: marker
-    const title = explicitTitleMatch[1].trim();
-    
-    // Check if there's a Desc: marker as well
-    if (explicitDescMatch) {
-      return {
-        title: title,
-        description: explicitDescMatch[1].trim()
-      };
-    } else {
-      // No explicit description, try to find the rest of the content
-      // Get everything after the Title: line
-      const titleIndex = cleanText.indexOf(explicitTitleMatch[0]);
-      const titleEndIndex = titleIndex + explicitTitleMatch[0].length;
-      const remainingText = cleanText.substring(titleEndIndex).trim();
-      
-      return {
-        title: title,
-        description: remainingText || title // Fallback to title if no description
-      };
-    }
-  }
-  
-  // PRIORITY 2: Check for hashtag format (#title, #description)
-  const hashtagTitleMatch = cleanText.match(/#title\s+([^\n#]+)/i);
-  const hashtagDescMatch = cleanText.match(/#description\s+([^\n#]+)/i);
-  
-  if (hashtagTitleMatch && hashtagDescMatch) {
+  if (titleMatch && descMatch) {
     return {
-      title: hashtagTitleMatch[1].trim(),
-      description: hashtagDescMatch[1].trim()
+      title: titleMatch[1].trim(),
+      description: descMatch[1].trim()
     };
   }
   
-  // PRIORITY 3: Check for "Title: X | Description: Y" format
-  const pipeFormatMatch = cleanText.match(/Title:\s*([^|]+)\s*\|\s*Description:\s*(.+)/i);
-  if (pipeFormatMatch) {
+  // Check for "Title: X | Description: Y" format
+  const formatMatch = cleanText.match(/Title:\s*([^|]+)\s*\|\s*Description:\s*(.+)/i);
+  if (formatMatch) {
     return {
-      title: pipeFormatMatch[1].trim(),
-      description: pipeFormatMatch[2].trim()
+      title: formatMatch[1].trim(),
+      description: formatMatch[2].trim()
     };
   }
   
-  // PRIORITY 4: Smart extraction - first sentence as title, rest as description
+  // Smart extraction - first sentence as title, rest as description
   const sentences = cleanText.split(/[.!?]/).filter(s => s.trim().length > 0);
   
   if (sentences.length >= 2) {
@@ -373,7 +348,7 @@ function getMockTweets(): TwitterAPIResponse {
     data: [
       {
         id: mockTweetId,
-        text: 'Title: My Amazing Digital Art\nDesc: Check out this amazing digital art I created! @tweetonium_xyz mint this for me! #NFT #DigitalArt',
+        text: 'Title: My Amazing Digital Art | Description: Check out this amazing digital art I created! @tweetonium_xyz mint this for me! #NFT #DigitalArt',
         author_id: mockUserId,
         created_at: new Date().toISOString(),
         entities: {
@@ -395,15 +370,6 @@ function getMockTweets(): TwitterAPIResponse {
         attachments: {
           media_keys: ['mock_media_2']
         }
-      },
-      {
-        id: 'mock_tweet_' + (Date.now() + 2),
-        text: 'Title: Test 12.55 15 may\nDesc:\n@tweetonium_xyz #NFT https://t.co/MfC6XpNyG3',
-        author_id: mockUserId,
-        created_at: new Date().toISOString(),
-        attachments: {
-          media_keys: ['mock_media_3']
-        }
       }
     ],
     includes: {
@@ -424,11 +390,6 @@ function getMockTweets(): TwitterAPIResponse {
           media_key: 'mock_media_2',
           type: 'photo',
           url: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead'
-        },
-        {
-          media_key: 'mock_media_3',
-          type: 'photo',
-          url: 'https://pbs.twimg.com/media/Gq99oQGWIAAjEPv.jpg'
         }
       ]
     }
