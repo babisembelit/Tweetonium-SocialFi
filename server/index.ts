@@ -12,6 +12,7 @@ const PgStore = connectPgSimple(session);
 
 // Determine if we're using database
 const useDatabase = process.env.USE_DATABASE === 'true';
+console.log(`Starting Tweetonium with ${useDatabase ? 'PostgreSQL Database' : 'In-Memory'} storage`);
 
 // Setup Express
 const app = express();
