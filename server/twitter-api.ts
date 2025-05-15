@@ -34,7 +34,7 @@ const getTwitterConfig = (): TwitterAPIConfig => {
 /**
  * Search for recent mentions of our Tweetonium handle
  */
-export async function searchRecentMentions(): Promise<any[]> {
+export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
   try {
     const config = getTwitterConfig();
     
@@ -71,11 +71,22 @@ export async function searchRecentMentions(): Promise<any[]> {
       return response.data;
     }
     
+    // For development, check if we should use mock data
+    if (config.bearerToken === 'DUMMY_TOKEN_FOR_DEVELOPMENT') {
+      return getMockTweets();
+    }
+    
     return { data: [], includes: { users: [], media: [] } };
   } catch (error) {
     console.error('Error searching Twitter mentions:', error);
     log('Failed to fetch Twitter mentions', 'error');
-    return [];
+    
+    // For development, use mock data if API fails
+    if (getTwitterConfig().bearerToken === 'DUMMY_TOKEN_FOR_DEVELOPMENT') {
+      return getMockTweets();
+    }
+    
+    return { data: [], includes: { users: [], media: [] } };
   }
 }
 
@@ -292,10 +303,41 @@ export function startPeriodicMentionChecking(intervalMinutes = 5): void {
   log(`Periodic Twitter mention checking started (every ${intervalMinutes} minutes)`, 'info');
 }
 
+// Define a response type for clarity
+interface TwitterAPIResponse {
+  data: Array<{
+    id: string;
+    text: string;
+    author_id: string;
+    created_at: string;
+    attachments?: {
+      media_keys: string[];
+    };
+    entities?: {
+      urls?: Array<{
+        expanded_url: string;
+      }>;
+    };
+  }>;
+  includes: {
+    users: Array<{
+      id: string;
+      username: string;
+      profile_image_url: string;
+    }>;
+    media?: Array<{
+      media_key: string;
+      type: string;
+      url?: string;
+      preview_image_url?: string;
+    }>;
+  };
+}
+
 /**
  * Get mock tweets for development/demo purposes
  */
-function getMockTweets(): any {
+function getMockTweets(): TwitterAPIResponse {
   const mockTweetId = 'mock_tweet_' + Date.now();
   const mockUserId = 'mock_user_1';
   const mediaKey = 'mock_media_1';

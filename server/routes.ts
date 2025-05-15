@@ -149,9 +149,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create NFT metadata
       const metadata = createNFTMetadata({
-        name: title,
+        title: title,
         description: description || "",
-        image: imageUrl,
+        imageUrl: imageUrl,
         creator: user.username,
       });
       
