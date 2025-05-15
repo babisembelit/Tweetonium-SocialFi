@@ -1,5 +1,7 @@
 import { users, type User, type InsertUser, wallets, type Wallet, type InsertWallet, nfts, type NFT, type InsertNft } from "@shared/schema";
 import { json } from "drizzle-orm/pg-core";
+import { eq, desc } from "drizzle-orm";
+import { db } from "./db";
 
 type Json = ReturnType<typeof json>;
 
@@ -542,22 +544,22 @@ import { eq, desc } from "drizzle-orm";
 // DatabaseStorage implementation using Drizzle ORM
 export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    const results = await db.select().from(users).where(eq(users.id, id));
+    return results[0] || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    const results = await db.select().from(users).where(eq(users.username, username));
+    return results[0] || undefined;
   }
 
   async getUserByTwitterId(twitterId: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.twitterId, twitterId));
-    return user || undefined;
+    const results = await db.select().from(users).where(eq(users.twitterId, twitterId));
+    return results[0] || undefined;
   }
 
   async createUser(insertUser: InsertUser & { twitterId?: string }): Promise<User> {
-    const [user] = await db
+    const results = await db
       .insert(users)
       .values({
         username: insertUser.username,
@@ -565,7 +567,7 @@ export class DatabaseStorage implements IStorage {
         twitterId: insertUser.twitterId || null
       })
       .returning();
-    return user;
+    return results[0];
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -573,17 +575,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getWallet(id: number): Promise<Wallet | undefined> {
-    const [wallet] = await db.select().from(wallets).where(eq(wallets.id, id));
-    return wallet || undefined;
+    const results = await db.select().from(wallets).where(eq(wallets.id, id));
+    return results[0] || undefined;
   }
 
   async getWalletByUserId(userId: number): Promise<Wallet | undefined> {
-    const [wallet] = await db.select().from(wallets).where(eq(wallets.userId, userId));
-    return wallet || undefined;
+    const results = await db.select().from(wallets).where(eq(wallets.userId, userId));
+    return results[0] || undefined;
   }
 
   async createWallet(insertWallet: InsertWallet): Promise<Wallet> {
-    const [wallet] = await db
+    const results = await db
       .insert(wallets)
       .values({
         userId: insertWallet.userId,
@@ -591,7 +593,7 @@ export class DatabaseStorage implements IStorage {
         privateKey: insertWallet.privateKey
       })
       .returning();
-    return wallet;
+    return results[0];
   }
 
   async createWalletForUser(userId: number): Promise<Wallet> {
@@ -623,8 +625,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNFT(id: number): Promise<NFT | undefined> {
-    const [nft] = await db.select().from(nfts).where(eq(nfts.id, id));
-    return nft || undefined;
+    const results = await db.select().from(nfts).where(eq(nfts.id, id));
+    return results[0] || undefined;
   }
 
   async getNFTsByCreator(creatorId: number): Promise<NFT[]> {
@@ -643,23 +645,23 @@ export class DatabaseStorage implements IStorage {
     // Handle the case where the ID is provided (for updates)
     if (insertNft.id) {
       const id = insertNft.id;
-      delete insertNft.id; // Remove id from the values to be updated
+      const { id: _, ...updateData } = insertNft; // Remove id from the values to be updated
       
-      const [nft] = await db
+      const results = await db
         .update(nfts)
         .set({
-          ...insertNft,
-          tweetId: insertNft.tweetId || null,
-          featured: insertNft.featured || 0
+          ...updateData,
+          tweetId: updateData.tweetId || null,
+          featured: updateData.featured || 0
         })
         .where(eq(nfts.id, id))
         .returning();
       
-      return nft;
+      return results[0];
     } 
     
     // New NFT creation
-    const [nft] = await db
+    const results = await db
       .insert(nfts)
       .values({
         title: insertNft.title,
@@ -677,7 +679,7 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     
-    return nft;
+    return results[0];
   }
 
   async getFeaturedNFTs(): Promise<NFT[]> {
@@ -696,12 +698,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async incrementNFTViews(id: number): Promise<void> {
-    const [nft] = await db
+    const results = await db
       .select()
       .from(nfts)
       .where(eq(nfts.id, id));
     
-    if (nft) {
+    if (results.length > 0) {
+      const nft = results[0];
       await db
         .update(nfts)
         .set({ views: (nft.views || 0) + 1 })
