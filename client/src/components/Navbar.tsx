@@ -3,8 +3,10 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ConnectXModal from "@/components/ConnectXModal";
 import { shortenAddress } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,52 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+// Wallet Balance Component
+interface WalletBalanceProps {
+  publicKey: string;
+}
+
+function WalletBalance({ publicKey }: WalletBalanceProps) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['/api/wallet', publicKey, 'balance'],
+    queryFn: async () => {
+      if (!publicKey) return null;
+      const response = await fetch(`/api/wallet/${publicKey}/balance`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch wallet balance');
+      }
+      return response.json();
+    },
+    enabled: !!publicKey,
+    refetchInterval: 60000, // Refetch every minute
+    refetchOnWindowFocus: true,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center bg-black p-2 sm:p-3 rounded-lg border border-gray-800 h-[40px]">
+        <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+        <span className="ml-2 text-xs sm:text-sm text-gray-400">Loading balance...</span>
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <p className="text-xs sm:text-sm bg-black p-2 sm:p-3 rounded-lg border border-gray-800 text-gray-400">
+        Unable to fetch balance
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-xs sm:text-sm bg-black p-2 sm:p-3 rounded-lg border border-gray-800">
+      {data.solBalance} SOL{" "}
+      <span className="text-gray-500 text-xs">({Number(data.balance).toLocaleString()} lamports)</span>
+    </p>
+  );
+}
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -218,7 +266,7 @@ export default function Navbar() {
                   
                   <div className="mb-4">
                     <h4 className="text-sm text-gray-400 mb-1">Balance</h4>
-                    <p className="text-xs sm:text-sm bg-black p-2 sm:p-3 rounded-lg border border-gray-800">1.0 SOL (simulated)</p>
+                    <WalletBalance publicKey={wallet?.publicKey || ""} />
                   </div>
 
                   <Button 
