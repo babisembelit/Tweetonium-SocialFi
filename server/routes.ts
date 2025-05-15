@@ -1,9 +1,9 @@
-import express, { type Express, Router } from "express";
+import express, { type Express, Router, Request, Response, NextFunction } from "express";
 import multer from "multer";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema, type NFT } from "@shared/schema";
 import { generateKeypair, createNFTMetadata, prepareLazyMint, finalizeNFTMinting, getWalletBalance } from "./solana";
 import { formatISO } from "date-fns";
 import path from "path";
@@ -62,6 +62,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           publicKey: keypair.publicKey,
           privateKey: keypair.privateKey, // Store encrypted private key
         });
+      }
+      
+      // Store user data in session
+      if (req.session) {
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        req.session.walletAddress = wallet.publicKey;
+        req.session.isAuthenticated = true;
       }
       
       res.json({
@@ -183,27 +191,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's NFTs
   apiRouter.get("/my-nfts", async (req, res) => {
     try {
-      // For demo purposes, simulate a user session with the first user
-      const users = await storage.getAllUsers();
-      if (users.length === 0) {
-        return res.status(401).json({ message: "No authenticated user found" });
+      // Get user from session (for now, using connect endpoint)
+      const userId = req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // Get user details and wallet
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
       }
       
-      const user = users[0];
-      const nfts = await storage.getNFTsByCreator(user.id);
+      const wallet = await storage.getWalletByUserId(userId);
+      if (!wallet) {
+        return res.json([]); // User has no wallet yet
+      }
+      
+      // Get NFTs owned by this wallet address
+      const walletNfts = await storage.getNFTsByWalletAddress(wallet.publicKey);
+      
+      // Get NFTs created by this user (for Twitter/X posts they made)
+      const createdNfts = await storage.getNFTsByCreator(user.id);
+      
+      // Combine both lists and remove duplicates
+      const combinedNftIds = new Set();
+      const allNfts: NFT[] = [];
+      
+      // Add wallet NFTs
+      for (const nft of walletNfts) {
+        if (!combinedNftIds.has(nft.id)) {
+          combinedNftIds.add(nft.id);
+          allNfts.push(nft);
+        }
+      }
+      
+      // Add created NFTs
+      for (const nft of createdNfts) {
+        if (!combinedNftIds.has(nft.id)) {
+          combinedNftIds.add(nft.id);
+          allNfts.push(nft);
+        }
+      }
+      
+      // Sort by newest first
+      allNfts.sort((a, b) => b.mintDate.getTime() - a.mintDate.getTime());
       
       // Format the NFTs for the frontend
-      const formattedNfts = nfts.map(nft => ({
-        id: nft.id,
-        title: nft.title,
-        description: nft.description,
-        image: nft.imageUrl,
-        creator: `@${user.username}`,
-        mintDate: formatISO(nft.mintDate).split("T")[0],
-        walletAddress: nft.walletAddress,
-        views: nft.views,
-        transactions: nft.transactions,
-        floorPrice: nft.floorPrice || (Math.random() * 6 + 0.1).toFixed(2), // Generate random price between 0.1 and 6 SOL
+      const formattedNfts = await Promise.all(allNfts.map(async nft => {
+        const creator = await storage.getUser(nft.creator);
+        
+        return {
+          id: nft.id,
+          title: nft.title,
+          description: nft.description,
+          image: nft.imageUrl,
+          creator: creator ? `@${creator.username}` : `@unknown`,
+          mintDate: formatISO(nft.mintDate).split("T")[0],
+          walletAddress: nft.walletAddress,
+          views: nft.views,
+          transactions: nft.transactions,
+          floorPrice: nft.floorPrice || (Math.random() * 6 + 0.1).toFixed(2),
+          isOwned: nft.walletAddress === wallet.publicKey,
+          isCreated: nft.creator === user.id
+        };
       }));
       
       res.json(formattedNfts);

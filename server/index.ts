@@ -1,10 +1,30 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import session from "express-session";
+import MemoryStore from "memorystore";
 
+// Create Memory Store for sessions
+const MemoryStoreSession = MemoryStore(session);
+
+// Setup Express
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Setup Sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'tweetonium-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  },
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // Prune expired entries every 24h
+  })
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();
