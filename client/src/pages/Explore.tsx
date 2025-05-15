@@ -47,7 +47,7 @@ export default function Explore() {
     <main className="flex-grow">
       <div className="py-8 px-4 md:px-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl pixel-font">EXPLORE</h2>
+          <h2 className="text-3xl tiny5-font">EXPLORE</h2>
           <Button 
             variant="outline" 
             size="sm" 
