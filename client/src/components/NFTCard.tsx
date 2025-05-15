@@ -15,6 +15,8 @@ export interface NFT {
   transactions?: string;
   floorPrice?: string;
   tokenId?: string;
+  isMinted?: number; // 0 = lazy minted, 1 = on-chain minted
+  metadata?: any;
 }
 
 interface NFTCardProps {

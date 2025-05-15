@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertUserSchema } from "@shared/schema";
-import { generateKeypair, createNFTMetadata } from "./solana";
+import { generateKeypair, createNFTMetadata, prepareLazyMint, finalizeNFTMinting } from "./solana";
 import { formatISO } from "date-fns";
 import path from "path";
 import fs from "fs/promises";
@@ -273,6 +273,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get NFT error:", error);
       res.status(400).json({ message: "Failed to get NFT details" });
+    }
+  });
+  
+  // Finalize (purchase) a lazy-minted NFT
+  apiRouter.post("/nft/:id/purchase", async (req, res) => {
+    try {
+      const nftId = parseInt(req.params.id);
+      if (isNaN(nftId)) {
+        return res.status(400).json({ message: "Invalid NFT ID" });
+      }
+      
+      const { buyerWalletAddress } = req.body;
+      if (!buyerWalletAddress) {
+        return res.status(400).json({ message: "Buyer wallet address is required" });
+      }
+      
+      const nft = await storage.getNFT(nftId);
+      if (!nft) {
+        return res.status(404).json({ message: "NFT not found" });
+      }
+      
+      // Check if already minted on-chain
+      if (nft.isMinted === 1) {
+        return res.status(400).json({ message: "NFT is already minted on-chain" });
+      }
+      
+      // Get metadata hash from the NFT metadata
+      const metadataHash = nft.metadata?.metadataHash || '';
+      if (!metadataHash) {
+        return res.status(400).json({ message: "NFT metadata is missing required information" });
+      }
+      
+      // Finalize the NFT minting on-chain
+      const result = await finalizeNFTMinting({
+        tokenId: nft.tokenId || '',
+        metadataHash,
+        buyerWalletAddress
+      });
+      
+      // Update the NFT record to mark it as minted on-chain
+      await storage.createNFT({
+        id: nft.id,
+        title: nft.title,
+        description: nft.description || undefined,
+        imageUrl: nft.imageUrl,
+        creator: nft.creator,
+        walletAddress: buyerWalletAddress, // Transfer to the buyer
+        tokenId: nft.tokenId || undefined,
+        tweetId: nft.tweetId || undefined,
+        metadata: nft.metadata,
+        isMinted: 1, // Mark as minted on-chain
+        transactions: `Purchased and minted on-chain: ${formatISO(new Date()).split("T")[0]}, tx: ${result.transactionId}`,
+        floorPrice: nft.floorPrice
+      });
+      
+      res.json({
+        success: true,
+        message: "NFT successfully purchased and minted on-chain",
+        transactionId: result.transactionId
+      });
+    } catch (error) {
+      console.error("NFT purchase error:", error);
+      res.status(500).json({ message: "Failed to purchase and mint NFT" });
     }
   });
   

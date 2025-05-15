@@ -9,8 +9,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart, Check } from "lucide-react";
 import { type NFT } from "./NFTCard";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useToast } from "@/hooks/use-toast";
 
 interface NFTModalProps {
   nft: NFT;
@@ -18,28 +23,102 @@ interface NFTModalProps {
 }
 
 export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
+  const [localNft, setLocalNft] = useState<NFT>(nft);
+  const { toast } = useToast();
+  const { wallet, isAuthenticated } = useAuthStore();
+  const queryClient = useQueryClient();
+  
+  // Mutation for purchasing (on-chain minting) an NFT
+  const purchaseMutation = useMutation({
+    mutationFn: async () => {
+      if (!wallet) throw new Error("No wallet connected");
+      return apiRequest(`/api/nft/${nft.id}/purchase`, {
+        method: "POST",
+        body: JSON.stringify({
+          buyerWalletAddress: wallet.publicKey
+        })
+      });
+    },
+    onSuccess: (data) => {
+      // Update the local NFT state
+      setLocalNft({
+        ...localNft,
+        isMinted: 1,
+        walletAddress: wallet?.publicKey || localNft.walletAddress,
+        transactions: `Purchased and minted on-chain: ${new Date().toISOString().split("T")[0]}`
+      });
+      
+      // Show success message
+      toast({
+        title: "Success!",
+        description: "The NFT has been purchased and minted on-chain",
+        variant: "success"
+      });
+      
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["nft", nft.id] });
+      queryClient.invalidateQueries({ queryKey: ["nfts"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to purchase NFT: " + (error instanceof Error ? error.message : "Unknown error"),
+        variant: "destructive"
+      });
+    }
+  });
+  
+  // Determine if this NFT is lazily minted (not yet on-chain)
+  const isLazyMinted = localNft.isMinted === 0;
+  
+  // Handle purchase button click
+  const handlePurchase = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please connect your Twitter account and wallet before purchasing",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    purchaseMutation.mutate();
+  };
+  
   return (
     <DialogContent className="w-[95%] max-w-5xl mx-auto bg-secondary border border-gray-800 text-white p-0 overflow-hidden">
       <div className="flex flex-col md:flex-row">
         {/* Left side - Image */}
         <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative h-auto" style={{ minHeight: '300px' }}>
           <img 
-            src={nft.image} 
-            alt={nft.title}
+            src={localNft.image} 
+            alt={localNft.title}
             className="max-w-full max-h-[80vh] md:max-h-[500px] object-contain p-4"
           />
+          
+          {/* Minting Status Badge */}
+          {isLazyMinted && (
+            <Badge className="absolute top-4 right-4 bg-yellow-600">
+              Lazy Minted
+            </Badge>
+          )}
+          {localNft.isMinted === 1 && (
+            <Badge className="absolute top-4 right-4 bg-green-600">
+              On-Chain
+            </Badge>
+          )}
         </div>
         
         {/* Right side - Info */}
         <div className="md:w-1/2 p-5 sm:p-6 flex flex-col">
           <div className="mb-4">
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              {nft.title}
+              {localNft.title}
             </h2>
             
             <div className="flex justify-between items-center mt-1">
               <div className="flex items-center text-gray-400">
-                <span className="text-sm font-medium">{nft.creator}</span>
+                <span className="text-sm font-medium">{localNft.creator}</span>
                 {/* Add a blue verification badge to simulate the verified creator */}
                 <span className="text-blue-500 ml-1">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,35 +138,71 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
             <div>
               <div className="text-xs text-gray-400 uppercase">Top Offer</div>
               <div className="text-md font-semibold mt-1">
-                {nft.floorPrice || "0.0"} SOL
+                {localNft.floorPrice || "0.0"} SOL
               </div>
             </div>
             <div>
               <div className="text-xs text-gray-400 uppercase">Last Sale</div>
               <div className="text-md font-semibold mt-1">
-                {nft.floorPrice ? (Number(nft.floorPrice) * 0.82).toFixed(3) : "0.0"} SOL
+                {localNft.floorPrice ? (Number(localNft.floorPrice) * 0.82).toFixed(3) : "0.0"} SOL
               </div>
             </div>
           </div>
           
           {/* Buy now section */}
           <div className="mb-6 border-b border-gray-800 pb-6">
+            {/* Show minting info if lazy minted */}
+            {isLazyMinted && (
+              <div className="mb-3 bg-yellow-900/30 p-3 rounded-md">
+                <h4 className="text-sm font-semibold text-yellow-300 flex items-center gap-2">
+                  <ShoppingCart size={16} />
+                  Lazy Minted NFT
+                </h4>
+                <p className="text-xs text-gray-300 mt-1">
+                  This NFT is lazily minted and will be created on-chain when purchased.
+                  No gas fees have been paid yet, making it eco-friendly and cost-effective.
+                </p>
+              </div>
+            )}
+            
             <div className="flex justify-between items-center mb-3">
-              <div className="text-sm text-gray-400">Buy for</div>
+              <div className="text-sm text-gray-400">
+                {isLazyMinted ? "Mint & Buy for" : "Buy for"}
+              </div>
               <div className="text-xs text-gray-500">Ending in 1 month</div>
             </div>
             
             <div className="flex justify-between items-center mb-4">
               <div className="text-2xl font-bold">
-                {nft.floorPrice || "0.0"} SOL
+                {localNft.floorPrice || "0.0"} SOL
               </div>
-              <div className="text-xs text-gray-500">(≈ ${nft.floorPrice ? (Number(nft.floorPrice) * 150).toFixed(2) : "0.00"})</div>
+              <div className="text-xs text-gray-500">(≈ ${localNft.floorPrice ? (Number(localNft.floorPrice) * 150).toFixed(2) : "0.00"})</div>
             </div>
             
             <div className="flex gap-2">
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Buy now
-              </Button>
+              {isLazyMinted ? (
+                <Button 
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  onClick={handlePurchase}
+                  disabled={purchaseMutation.isPending || !isAuthenticated}
+                >
+                  {purchaseMutation.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                      Minting...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <ShoppingCart size={16} />
+                      Mint & Buy Now
+                    </span>
+                  )}
+                </Button>
+              ) : (
+                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                  Buy now
+                </Button>
+              )}
               <Button variant="outline" className="px-4">
                 Make offer
               </Button>
