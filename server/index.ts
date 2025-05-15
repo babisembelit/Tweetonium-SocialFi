@@ -3,16 +3,22 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
 
-// Create Memory Store for sessions
+// Create session stores
 const MemoryStoreSession = MemoryStore(session);
+const PgStore = connectPgSimple(session);
+
+// Determine if we're using database
+const useDatabase = process.env.USE_DATABASE === 'true';
 
 // Setup Express
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Setup Sessions
+// Setup Sessions - choose store based on database setting
 app.use(session({
   secret: process.env.SESSION_SECRET || 'tweetonium-secret-key',
   resave: false,
@@ -21,9 +27,15 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   },
-  store: new MemoryStoreSession({
-    checkPeriod: 86400000 // Prune expired entries every 24h
-  })
+  store: useDatabase 
+    ? new PgStore({
+        pool,
+        tableName: 'session', // Uses a table called session
+        createTableIfMissing: true // Auto-create the session table if it doesn't exist
+      }) 
+    : new MemoryStoreSession({
+        checkPeriod: 86400000 // Prune expired entries every 24h
+      })
 }));
 
 app.use((req, res, next) => {
