@@ -56,9 +56,9 @@ export async function searchRecentMentions(): Promise<any[]> {
     // Update the last check time for next time
     LAST_CHECK_TIME = new Date().toISOString();
     
-    // Make the API request to Twitter
+    // Make the API request to Twitter with media expansions
     const response = await axios.get(
-      `${API_BASE_URL}/tweets/search/recent?${queryParams}&tweet.fields=created_at,author_id,entities&expansions=author_id&user.fields=username,profile_image_url`,
+      `${API_BASE_URL}/tweets/search/recent?${queryParams}&tweet.fields=created_at,author_id,entities,attachments&expansions=author_id,attachments.media_keys&user.fields=username,profile_image_url&media.fields=url,preview_image_url,type`,
       {
         headers: {
           'Authorization': `Bearer ${config.bearerToken}`
@@ -67,10 +67,11 @@ export async function searchRecentMentions(): Promise<any[]> {
     );
     
     if (response.data && response.data.data) {
-      return response.data.data;
+      // Return full response object to access media and includes
+      return response.data;
     }
     
-    return [];
+    return { data: [], includes: { users: [], media: [] } };
   } catch (error) {
     console.error('Error searching Twitter mentions:', error);
     log('Failed to fetch Twitter mentions', 'error');
@@ -79,18 +80,64 @@ export async function searchRecentMentions(): Promise<any[]> {
 }
 
 /**
+ * Extract title and description from tweet text
+ * Parses for patterns like #title or uses smart extraction
+ */
+function extractMetadataFromText(text: string): { title: string, description: string } {
+  // Remove the @tweetonium_xyz mention
+  const cleanText = text.replace(/@tweetonium_xyz/gi, '').trim();
+  
+  // Check for explicit title/description format
+  const titleMatch = cleanText.match(/#title\s+([^\n#]+)/i);
+  const descMatch = cleanText.match(/#description\s+([^\n#]+)/i);
+  
+  if (titleMatch && descMatch) {
+    return {
+      title: titleMatch[1].trim(),
+      description: descMatch[1].trim()
+    };
+  }
+  
+  // Check for "Title: X | Description: Y" format
+  const formatMatch = cleanText.match(/Title:\s*([^|]+)\s*\|\s*Description:\s*(.+)/i);
+  if (formatMatch) {
+    return {
+      title: formatMatch[1].trim(),
+      description: formatMatch[2].trim()
+    };
+  }
+  
+  // Smart extraction - first sentence as title, rest as description
+  const sentences = cleanText.split(/[.!?]/).filter(s => s.trim().length > 0);
+  
+  if (sentences.length >= 2) {
+    return {
+      title: sentences[0].trim(),
+      description: sentences.slice(1).join('. ').trim()
+    };
+  }
+  
+  // If all else fails, use the whole text as both title and description
+  return {
+    title: cleanText.substring(0, Math.min(50, cleanText.length)) + (cleanText.length > 50 ? '...' : ''),
+    description: cleanText
+  };
+}
+
+/**
  * Process tweets mentioning Tweetonium and mint NFTs
  */
 export async function processTweetMentions(): Promise<void> {
   try {
     log('Checking for new X/Twitter mentions...', 'info');
-    const tweets = await searchRecentMentions();
+    const response = await searchRecentMentions();
     
-    if (tweets.length === 0) {
+    if (!response.data || response.data.length === 0) {
       log('No new mentions found', 'info');
       return;
     }
     
+    const tweets = response.data;
     log(`Found ${tweets.length} mentions to process`, 'info');
     
     // Process each tweet that mentions us
@@ -103,11 +150,17 @@ export async function processTweetMentions(): Promise<void> {
           continue;
         }
         
+        // Verify that tweet mentions @tweetonium_xyz
+        if (!tweet.text.toLowerCase().includes('@tweetonium_xyz')) {
+          log(`Tweet ${tweet.id} does not mention @tweetonium_xyz, skipping`, 'info');
+          continue;
+        }
+        
         // Get or create the user
         let user = await storage.getUserByTwitterId(tweet.author_id);
         if (!user) {
-          // Create a new user based on Twitter info
-          const twitterUser = tweet.includes?.users?.find((u: any) => u.id === tweet.author_id) || {
+          // Find the user in the includes section
+          const twitterUser = response.includes?.users?.find((u: any) => u.id === tweet.author_id) || {
             username: 'user_' + tweet.author_id,
             profile_image_url: null
           };
@@ -129,11 +182,55 @@ export async function processTweetMentions(): Promise<void> {
           continue;
         }
         
+        // Extract image from tweet
+        let imageUrl = null;
+        
+        // Check for media attachments
+        if (tweet.attachments && tweet.attachments.media_keys) {
+          const mediaKeys = tweet.attachments.media_keys;
+          // Find the media in the includes section
+          const mediaItems = response.includes?.media || [];
+          
+          // Find first image
+          const mediaItem = mediaItems.find((m: any) => 
+            mediaKeys.includes(m.media_key) && 
+            (m.type === 'photo' || m.type === 'animated_gif')
+          );
+          
+          if (mediaItem) {
+            imageUrl = mediaItem.url || mediaItem.preview_image_url;
+          }
+        }
+        
+        // If no image found, check entities
+        if (!imageUrl && tweet.entities && tweet.entities.urls) {
+          // Look for image URLs in the tweet
+          const urlEntity = tweet.entities.urls.find((u: any) => 
+            u.expanded_url && 
+            (u.expanded_url.endsWith('.jpg') || 
+             u.expanded_url.endsWith('.jpeg') || 
+             u.expanded_url.endsWith('.png') || 
+             u.expanded_url.endsWith('.gif'))
+          );
+          
+          if (urlEntity) {
+            imageUrl = urlEntity.expanded_url;
+          }
+        }
+        
+        // Use default image if no image found
+        if (!imageUrl) {
+          imageUrl = 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb';
+        }
+        
+        // Extract title and description from tweet text
+        const { title, description } = extractMetadataFromText(tweet.text);
+        
         // Prepare NFT metadata
         const metadata = createNFTMetadata({
-          title: `Tweet by @${user.username}`,
-          description: tweet.text,
-          imageUrl: tweet.entities?.media?.[0]?.url || 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb',
+          title: title || `Tweet NFT by @${user.username}`,
+          description: description || tweet.text,
+          imageUrl: imageUrl,
           creator: user.username,
           attributes: [
             { trait_type: 'Tweet ID', value: tweet.id },
@@ -198,29 +295,59 @@ export function startPeriodicMentionChecking(intervalMinutes = 5): void {
 /**
  * Get mock tweets for development/demo purposes
  */
-function getMockTweets(): any[] {
-  const mockTweets = [
-    {
-      id: 'mock_tweet_' + Date.now(),
-      text: 'Check out this amazing digital art I created! @tweetonium_xyz mint this for me! #NFT #DigitalArt',
-      author_id: 'mock_user_1',
-      created_at: new Date().toISOString(),
-      entities: {
-        media: [
-          { url: 'https://images.unsplash.com/photo-1569172122301-bc5008bc09c5' }
-        ]
-      },
-      includes: {
-        users: [
-          {
-            id: 'mock_user_1',
-            username: 'creativedigitalartist',
-            profile_image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde'
-          }
-        ]
-      }
-    }
-  ];
+function getMockTweets(): any {
+  const mockTweetId = 'mock_tweet_' + Date.now();
+  const mockUserId = 'mock_user_1';
+  const mediaKey = 'mock_media_1';
   
-  return mockTweets;
+  return {
+    data: [
+      {
+        id: mockTweetId,
+        text: 'Title: My Amazing Digital Art | Description: Check out this amazing digital art I created! @tweetonium_xyz mint this for me! #NFT #DigitalArt',
+        author_id: mockUserId,
+        created_at: new Date().toISOString(),
+        entities: {
+          urls: [
+            { 
+              expanded_url: 'https://example.com/tweet-image.jpg'
+            }
+          ]
+        },
+        attachments: {
+          media_keys: [mediaKey]
+        }
+      },
+      {
+        id: 'mock_tweet_' + (Date.now() + 1),
+        text: 'Just created this abstract piece! #title Abstract Dreams #description A journey through colors and shapes @tweetonium_xyz #NFT',
+        author_id: mockUserId,
+        created_at: new Date().toISOString(),
+        attachments: {
+          media_keys: ['mock_media_2']
+        }
+      }
+    ],
+    includes: {
+      users: [
+        {
+          id: mockUserId,
+          username: 'creativedigitalartist',
+          profile_image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde'
+        }
+      ],
+      media: [
+        {
+          media_key: mediaKey,
+          type: 'photo',
+          url: 'https://images.unsplash.com/photo-1569172122301-bc5008bc09c5'
+        },
+        {
+          media_key: 'mock_media_2',
+          type: 'photo',
+          url: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead'
+        }
+      ]
+    }
+  };
 }

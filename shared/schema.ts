@@ -42,9 +42,10 @@ export const insertWalletSchema = createInsertSchema(wallets).omit({ id: true, c
 export const insertNftSchema = createInsertSchema(nfts).omit({ 
   id: true, 
   mintDate: true, 
-  views: true,
-  isMinted: true, 
-  featured: true 
+  views: true 
+}).extend({
+  isMinted: z.number().optional(),
+  featured: z.number().optional()
 });
 
 // Types
