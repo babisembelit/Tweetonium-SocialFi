@@ -22,6 +22,11 @@ interface TwitterAPIConfig {
 const getTwitterConfig = (): TwitterAPIConfig => {
   const bearerToken = process.env.TWITTER_BEARER_TOKEN;
   
+  // For test/development purposes, always use mock data
+  // TODO: Remove this override for production
+  log('Using mock Twitter data for testing', 'warning');
+  return { bearerToken: 'DUMMY_TOKEN_FOR_DEVELOPMENT' };
+  
   if (!bearerToken) {
     log('Twitter API bearer token not configured', 'warning');
     // Return a dummy token for development if missing
