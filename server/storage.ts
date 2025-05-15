@@ -32,6 +32,13 @@ export class MemStorage implements IStorage {
   protected currentUserId: number;
   protected currentWalletId: number;
   protected currentNftId: number;
+  
+  // Additional indexes for quick lookups
+  protected usernameToUserMap: Map<string, number>; // username -> userId
+  protected twitterIdToUserMap: Map<string, number>; // twitterId -> userId
+  protected userToWalletMap: Map<number, number>; // userId -> walletId
+  protected tweetToNftMap: Map<string, number[]>; // tweetId -> nftIds
+  protected creatorToNftMap: Map<number, number[]>; // creatorId -> nftIds
 
   constructor() {
     this.usersData = new Map();
@@ -40,6 +47,13 @@ export class MemStorage implements IStorage {
     this.currentUserId = 1;
     this.currentWalletId = 1;
     this.currentNftId = 1;
+    
+    // Initialize indexes
+    this.usernameToUserMap = new Map();
+    this.twitterIdToUserMap = new Map();
+    this.userToWalletMap = new Map();
+    this.tweetToNftMap = new Map();
+    this.creatorToNftMap = new Map();
 
     // Initialize with sample data for demo purposes
     this.initSampleData();

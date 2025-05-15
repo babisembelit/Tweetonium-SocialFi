@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   profileImage: text("profile_image"),
+  twitterId: text("twitter_id").unique(), // Twitter/X user ID
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -26,6 +27,7 @@ export const nfts = pgTable("nfts", {
   walletAddress: text("wallet_address").notNull(),
   mintDate: timestamp("mint_date").defaultNow().notNull(),
   tokenId: text("token_id"),
+  tweetId: text("tweet_id"), // ID of the tweet this NFT was created from
   metadata: json("metadata"),
   isMinted: integer("is_minted").default(0), // 0 = lazy minted, 1 = on-chain minted
   featured: integer("featured").default(0), // 0 = not featured, 1 = featured
