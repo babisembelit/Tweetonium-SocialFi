@@ -4,18 +4,21 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getUserByTwitterId(twitterId: string): Promise<User | undefined>;
+  createUser(user: InsertUser & { twitterId?: string }): Promise<User>;
   getAllUsers(): Promise<User[]>;
 
   // Wallet operations
   getWallet(id: number): Promise<Wallet | undefined>;
   getWalletByUserId(userId: number): Promise<Wallet | undefined>;
   createWallet(wallet: InsertWallet): Promise<Wallet>;
+  createWalletForUser(userId: number): Promise<Wallet>;
 
   // NFT operations
   getNFT(id: number): Promise<NFT | undefined>;
   getNFTsByCreator(creatorId: number): Promise<NFT[]>;
-  createNFT(nft: InsertNft): Promise<NFT>;
+  getNFTsByTweetId(tweetId: string): Promise<NFT[]>;
+  createNFT(nft: InsertNft & { tweetId?: string }): Promise<NFT>;
   getFeaturedNFTs(): Promise<NFT[]>;
   getNewNFTs(): Promise<NFT[]>;
   incrementNFTViews(id: number): Promise<void>;
