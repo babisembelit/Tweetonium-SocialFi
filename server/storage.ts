@@ -1,4 +1,5 @@
 import { users, type User, type InsertUser, wallets, type Wallet, type InsertWallet, nfts, type NFT, type InsertNft } from "@shared/schema";
+import { Json } from "drizzle-orm/pg-core";
 
 export interface IStorage {
   // User operations
@@ -18,7 +19,7 @@ export interface IStorage {
   getNFT(id: number): Promise<NFT | undefined>;
   getNFTsByCreator(creatorId: number): Promise<NFT[]>;
   getNFTsByTweetId(tweetId: string): Promise<NFT[]>;
-  createNFT(nft: InsertNft & { tweetId?: string }): Promise<NFT>;
+  createNFT(nft: InsertNft & { tweetId?: string; featured?: number }): Promise<NFT>;
   getFeaturedNFTs(): Promise<NFT[]>;
   getNewNFTs(): Promise<NFT[]>;
   incrementNFTViews(id: number): Promise<void>;
@@ -124,7 +125,7 @@ export class MemStorage implements IStorage {
       imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
-      metadata: { name: "Geometric Dreams" },
+      metadata: { name: "Geometric Dreams" } as any,
       tokenId: "sample_token_1",
       featured: 1,
       floorPrice: "2.45",
@@ -136,163 +137,170 @@ export class MemStorage implements IStorage {
       imageUrl: "https://images.unsplash.com/photo-1622737133809-d95047b9e673?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
-      metadata: { name: "Cyber City 2077" },
+      metadata: { name: "Cyber City 2077" } as any,
       tokenId: "sample_token_2",
       featured: 1,
       floorPrice: "5.89",
     });
 
+    // More featured NFTs
     this.createNFT({
-      title: "Retro Pixel Hero",
-      description: "A colorful pixel art character inspired by retro gaming aesthetic. This nostalgic piece brings back memories of 8-bit adventures.",
-      imageUrl: "https://images.unsplash.com/photo-1635322966219-b75ed372eb01?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      title: "Digital Dreamscape",
+      description: "A surreal landscape that blends digital and natural elements into a dreamlike scene. The boundaries between reality and imagination blur in this piece.",
+      imageUrl: "https://images.unsplash.com/photo-1617791160505-6f00504e3519?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist3.id,
       walletAddress: wallet3.publicKey,
-      metadata: { name: "Retro Pixel Hero" },
+      metadata: { name: "Digital Dreamscape" } as any,
       tokenId: "sample_token_3",
       featured: 1,
+      floorPrice: "1.24",
     });
 
     this.createNFT({
-      title: "Dreamscape",
-      description: "A surreal digital painting featuring dreamlike elements and flowing composition. Enter a world where reality bends to imagination.",
-      imageUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist1.id,
-      walletAddress: wallet1.publicKey,
-      metadata: { name: "Dreamscape" },
+      title: "Abstract Reality",
+      description: "An abstract exploration of form, color, and texture that challenges perceptions of reality. The piece invites viewers to find their own meaning.",
+      imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist4.id,
+      walletAddress: wallet4.publicKey,
+      metadata: { name: "Abstract Reality" } as any,
       tokenId: "sample_token_4",
       featured: 1,
-      floorPrice: "3.75",
+      floorPrice: "2.76",
     });
 
     this.createNFT({
-      title: "Neon Horizon",
-      description: "A vibrant landscape with glowing neon elements inspired by synthwave aesthetics and retro-futuristic dreams.",
-      imageUrl: "https://images.unsplash.com/photo-1604871000636-074fa5117945?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist4.id,
-      walletAddress: wallet4.publicKey,
-      metadata: { name: "Neon Horizon" },
-      tokenId: "sample_token_9",
-      featured: 1,
-    });
-
-    this.createNFT({
-      title: "Cosmic Journey",
-      description: "An artistic interpretation of deep space with swirling galaxies and nebulae. A meditation on our place in the universe.",
-      imageUrl: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist5.id,
-      walletAddress: wallet5.publicKey,
-      metadata: { name: "Cosmic Journey" },
-      tokenId: "sample_token_10",
-      featured: 1,
-    });
-
-    this.createNFT({
-      title: "Digital Forest",
-      description: "A peaceful virtual forest with data trees and binary leaves. Nature reimagined through the lens of technology.",
-      imageUrl: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist3.id,
-      walletAddress: wallet3.publicKey,
-      metadata: { name: "Digital Forest" },
-      tokenId: "sample_token_11",
-      featured: 1,
-    });
-
-    this.createNFT({
-      title: "Abstract Emotions",
-      description: "A series of abstract shapes and colors representing the full spectrum of human emotions. Each viewer may find different meanings.",
-      imageUrl: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist2.id,
-      walletAddress: wallet2.publicKey,
-      metadata: { name: "Abstract Emotions" },
-      tokenId: "sample_token_12",
-      featured: 1,
-    });
-
-    this.createNFT({
-      title: "Virtual Sculpture",
-      description: "A 3D sculpture that could never exist in physical space due to impossible geometries. Digital art breaks the rules of reality.",
-      imageUrl: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist5.id,
-      walletAddress: wallet5.publicKey,
-      metadata: { name: "Virtual Sculpture" },
-      tokenId: "sample_token_13",
-      featured: 1,
-    });
-
-    // Sample NFTs - New
-    this.createNFT({
-      title: "Minimal Shapes",
-      description: "A minimalist digital artwork with bold lines and shapes. Simplicity speaks volumes in this careful composition.",
-      imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist2.id,
-      walletAddress: wallet2.publicKey,
-      metadata: { name: "Minimal Shapes" },
-      tokenId: "sample_token_5",
-      featured: 0,
-    });
-
-    this.createNFT({
-      title: "Digital Sculpture #42",
-      description: "A 3D rendered abstract sculpture in vibrant colors. Digital techniques bring this impossible form to life.",
+      title: "Neon Genesis",
+      description: "A vibrant explosion of neon colors and geometric forms that pays homage to the aesthetics of 80s cyberpunk and anime visuals.",
       imageUrl: "https://images.unsplash.com/photo-1578632767115-351597cf2477?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
-      creator: artist3.id,
-      walletAddress: wallet3.publicKey,
-      metadata: { name: "Digital Sculpture #42" },
-      tokenId: "sample_token_6",
-      featured: 0,
+      creator: artist5.id,
+      walletAddress: wallet5.publicKey,
+      metadata: { name: "Neon Genesis" } as any,
+      tokenId: "sample_token_5",
+      featured: 1,
+      floorPrice: "7.12",
     });
 
+    // Sample NFTs - New Releases (not featured)
     this.createNFT({
-      title: "Flow State",
-      description: "A colorful generative art piece with flowing patterns created through algorithmic processes and artistic direction.",
-      imageUrl: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      title: "Quantum Pixels",
+      description: "A digital exploration of quantum mechanics visualized through pixel art. Each pixel represents a potential quantum state.",
+      imageUrl: "https://images.unsplash.com/photo-1633186223008-a035c4c94333?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
-      metadata: { name: "Flow State" },
-      tokenId: "sample_token_7",
+      metadata: { name: "Quantum Pixels" } as any,
+      tokenId: "sample_token_6",
       featured: 0,
+      floorPrice: "0.89",
     });
 
     this.createNFT({
-      title: "Digital Collage #7",
-      description: "A digital collage combining photography and abstract elements. The juxtaposition creates new meanings and interpretations.",
-      imageUrl: "https://images.unsplash.com/photo-1559030623-0226b1241edd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      title: "Digital Renaissance",
+      description: "A modern reinterpretation of Renaissance art using digital techniques. Classical forms meet contemporary aesthetics.",
+      imageUrl: "https://images.unsplash.com/photo-1625037584800-65f031d9e6e6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
-      metadata: { name: "Digital Collage #7" },
-      tokenId: "sample_token_8",
+      metadata: { name: "Digital Renaissance" } as any,
+      tokenId: "sample_token_7",
       featured: 0,
+      floorPrice: "1.55",
     });
 
     this.createNFT({
-      title: "Cybernetic Dreams",
-      description: "An exploration of the relationship between humans and technology in a digitized future where the boundaries blur.",
-      imageUrl: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      title: "Pixel Dreams",
+      description: "A nostalgic journey through pixel art that celebrates the visual aesthetics of early computer graphics and video games.",
+      imageUrl: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist3.id,
+      walletAddress: wallet3.publicKey,
+      metadata: { name: "Pixel Dreams" } as any,
+      tokenId: "sample_token_8",
+      featured: 0,
+      floorPrice: "3.21",
+    });
+
+    this.createNFT({
+      title: "Virtual Horizons",
+      description: "An expansive digital landscape that explores the horizon between reality and virtual existence. The future meets the present in this piece.",
+      imageUrl: "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist4.id,
       walletAddress: wallet4.publicKey,
-      metadata: { name: "Cybernetic Dreams" },
-      tokenId: "sample_token_14",
+      metadata: { name: "Virtual Horizons" } as any,
+      tokenId: "sample_token_9",
       featured: 0,
+      floorPrice: "4.33",
+    });
+
+    this.createNFT({
+      title: "Cosmic Algorithm",
+      description: "A visual representation of cosmic algorithms and patterns found in nature, rendered as digital art. The piece connects the microscopic with the astronomical.",
+      imageUrl: "https://images.unsplash.com/photo-1617791160588-241658c0f566?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      creator: artist5.id,
+      walletAddress: wallet5.publicKey,
+      metadata: { name: "Cosmic Algorithm" } as any,
+      tokenId: "sample_token_10",
+      featured: 1,
+      floorPrice: "6.78",
     });
   }
 
-  // User operations
   async getUser(id: number): Promise<User | undefined> {
     return this.usersData.get(id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.usersData.values()).find(
-      (user) => user.username === username,
-    );
+    // Use the index for faster lookup if available
+    const userId = this.usernameToUserMap.get(username);
+    if (userId !== undefined) {
+      return this.usersData.get(userId);
+    }
+    
+    // Fallback to iterating if not in index
+    for (const user of this.usersData.values()) {
+      if (user.username === username) {
+        // Update the index for future lookups
+        this.usernameToUserMap.set(user.username, user.id);
+        return user;
+      }
+    }
+    return undefined;
+  }
+  
+  async getUserByTwitterId(twitterId: string): Promise<User | undefined> {
+    // Use the index for faster lookup if available
+    const userId = this.twitterIdToUserMap.get(twitterId);
+    if (userId !== undefined) {
+      return this.usersData.get(userId);
+    }
+    
+    // Fallback to iterating if not in index
+    for (const user of this.usersData.values()) {
+      if (user.twitterId === twitterId) {
+        // Update the index for future lookups
+        this.twitterIdToUserMap.set(twitterId, user.id);
+        return user;
+      }
+    }
+    return undefined;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async createUser(insertUser: InsertUser & { twitterId?: string }): Promise<User> {
     const id = this.currentUserId++;
     const createdAt = new Date();
-    const user: User = { ...insertUser, id, createdAt };
+    const user: User = {
+      id,
+      username: insertUser.username,
+      profileImage: insertUser.profileImage || null,
+      twitterId: insertUser.twitterId || null,
+      createdAt
+    };
+    
     this.usersData.set(id, user);
+    
+    // Update indexes
+    this.usernameToUserMap.set(user.username, id);
+    if (user.twitterId) {
+      this.twitterIdToUserMap.set(user.twitterId, id);
+    }
+    
     return user;
   }
 
@@ -300,61 +308,182 @@ export class MemStorage implements IStorage {
     return Array.from(this.usersData.values());
   }
 
-  // Wallet operations
   async getWallet(id: number): Promise<Wallet | undefined> {
     return this.walletsData.get(id);
   }
 
   async getWalletByUserId(userId: number): Promise<Wallet | undefined> {
-    return Array.from(this.walletsData.values()).find(
-      (wallet) => wallet.userId === userId,
-    );
+    // Use the index for faster lookup if available
+    const walletId = this.userToWalletMap.get(userId);
+    if (walletId !== undefined) {
+      return this.walletsData.get(walletId);
+    }
+    
+    // Fallback to iterating if not in index
+    for (const wallet of this.walletsData.values()) {
+      if (wallet.userId === userId) {
+        // Update the index for future lookups
+        this.userToWalletMap.set(userId, wallet.id);
+        return wallet;
+      }
+    }
+    return undefined;
   }
 
   async createWallet(insertWallet: InsertWallet): Promise<Wallet> {
     const id = this.currentWalletId++;
     const createdAt = new Date();
-    const wallet: Wallet = { ...insertWallet, id, createdAt };
+    const wallet: Wallet = {
+      id,
+      userId: insertWallet.userId,
+      publicKey: insertWallet.publicKey,
+      privateKey: insertWallet.privateKey,
+      createdAt
+    };
+    
     this.walletsData.set(id, wallet);
+    
+    // Update the index
+    this.userToWalletMap.set(wallet.userId, id);
+    
+    return wallet;
+  }
+  
+  async createWalletForUser(userId: number): Promise<Wallet> {
+    // Check if user exists
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    
+    // Check if user already has a wallet
+    const existingWallet = await this.getWalletByUserId(userId);
+    if (existingWallet) {
+      return existingWallet;
+    }
+    
+    // Generate a simple wallet (in a real app, this would call the Solana API)
+    // Here we're just using a random public/private key pair for demo
+    const publicKey = `wallet_${Math.random().toString(36).substring(2, 15)}`;
+    const privateKey = `private_${Math.random().toString(36).substring(2, 15)}`;
+    
+    // Create and store the wallet
+    const wallet = await this.createWallet({
+      userId,
+      publicKey,
+      privateKey
+    });
+    
     return wallet;
   }
 
-  // NFT operations
   async getNFT(id: number): Promise<NFT | undefined> {
     return this.nftsData.get(id);
   }
 
   async getNFTsByCreator(creatorId: number): Promise<NFT[]> {
-    return Array.from(this.nftsData.values()).filter(
-      (nft) => nft.creator === creatorId,
-    );
+    // Use the index for faster lookup if available
+    const nftIds = this.creatorToNftMap.get(creatorId);
+    if (nftIds && nftIds.length > 0) {
+      return nftIds
+        .map(id => this.nftsData.get(id))
+        .filter(Boolean) as NFT[];
+    }
+    
+    // Fallback to iterating if not in index
+    const result: NFT[] = [];
+    for (const nft of this.nftsData.values()) {
+      if (nft.creator === creatorId) {
+        result.push(nft);
+        
+        // Update the index for future lookups
+        if (!this.creatorToNftMap.has(creatorId)) {
+          this.creatorToNftMap.set(creatorId, []);
+        }
+        if (!this.creatorToNftMap.get(creatorId)?.includes(nft.id)) {
+          this.creatorToNftMap.get(creatorId)?.push(nft.id);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  async getNFTsByTweetId(tweetId: string): Promise<NFT[]> {
+    // Use the index for faster lookup if available
+    const nftIds = this.tweetToNftMap.get(tweetId);
+    if (nftIds && nftIds.length > 0) {
+      return nftIds
+        .map(id => this.nftsData.get(id))
+        .filter(Boolean) as NFT[];
+    }
+    
+    // Fallback to iterating if not in index
+    const result: NFT[] = [];
+    for (const nft of this.nftsData.values()) {
+      if (nft.tweetId === tweetId) {
+        result.push(nft);
+        
+        // Update the index for future lookups
+        if (!this.tweetToNftMap.has(tweetId)) {
+          this.tweetToNftMap.set(tweetId, []);
+        }
+        if (!this.tweetToNftMap.get(tweetId)?.includes(nft.id)) {
+          this.tweetToNftMap.get(tweetId)?.push(nft.id);
+        }
+      }
+    }
+    
+    return result;
   }
 
-  async createNFT(insertNft: InsertNft & { featured?: number }): Promise<NFT> {
+  async createNFT(insertNft: InsertNft & { featured?: number; tweetId?: string }): Promise<NFT> {
     const id = this.currentNftId++;
     const mintDate = new Date();
-    const views = 0;
-    const featured = (insertNft as any).featured ?? 0;
-    const nft: NFT = { 
-      ...insertNft, 
-      id, 
-      mintDate, 
-      views, 
-      featured, 
-      isMinted: (insertNft as any).isMinted ?? 0 
+    const nft: NFT = {
+      id,
+      title: insertNft.title,
+      description: insertNft.description || null,
+      imageUrl: insertNft.imageUrl,
+      creator: insertNft.creator,
+      walletAddress: insertNft.walletAddress,
+      tokenId: insertNft.tokenId || null,
+      tweetId: insertNft.tweetId || null,
+      metadata: insertNft.metadata as any,
+      mintDate,
+      isMinted: insertNft.isMinted || 0,
+      featured: insertNft.featured || 0,
+      views: 0,
+      transactions: insertNft.transactions || null,
+      floorPrice: insertNft.floorPrice || null,
     };
+    
     this.nftsData.set(id, nft);
+    
+    // Update indexes
+    // Creator -> NFT index
+    if (!this.creatorToNftMap.has(nft.creator)) {
+      this.creatorToNftMap.set(nft.creator, []);
+    }
+    this.creatorToNftMap.get(nft.creator)?.push(id);
+    
+    // Tweet -> NFT index
+    if (nft.tweetId) {
+      if (!this.tweetToNftMap.has(nft.tweetId)) {
+        this.tweetToNftMap.set(nft.tweetId, []);
+      }
+      this.tweetToNftMap.get(nft.tweetId)?.push(id);
+    }
+    
     return nft;
   }
 
   async getFeaturedNFTs(): Promise<NFT[]> {
-    return Array.from(this.nftsData.values()).filter(
-      (nft) => nft.featured === 1,
-    );
+    return Array.from(this.nftsData.values())
+      .filter(nft => nft.featured === 1);
   }
 
   async getNewNFTs(): Promise<NFT[]> {
-    // Get all NFTs sorted by mint date (newest first)
     return Array.from(this.nftsData.values())
       .sort((a, b) => b.mintDate.getTime() - a.mintDate.getTime());
   }
@@ -362,7 +491,7 @@ export class MemStorage implements IStorage {
   async incrementNFTViews(id: number): Promise<void> {
     const nft = this.nftsData.get(id);
     if (nft) {
-      nft.views += 1;
+      nft.views = (nft.views || 0) + 1;
       this.nftsData.set(id, nft);
     }
   }
@@ -376,6 +505,13 @@ class ResetableMemStorage extends MemStorage {
     this.usersData.clear();
     this.walletsData.clear();
     this.nftsData.clear();
+    
+    // Clear indexes
+    this.usernameToUserMap.clear();
+    this.twitterIdToUserMap.clear();
+    this.userToWalletMap.clear();
+    this.tweetToNftMap.clear();
+    this.creatorToNftMap.clear();
     
     // Reset IDs
     this.currentUserId = 1;
