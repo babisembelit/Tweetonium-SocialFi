@@ -52,10 +52,17 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
     // Store current time at beginning of check
     const currentCheckTime = new Date().toISOString();
     
+    // Log current time window - helps debug live vs dev environments
+    log(`Current LAST_CHECK_TIME: ${LAST_CHECK_TIME || 'null (first run)'}`, 'info');
+    log(`Current check time: ${currentCheckTime}`, 'info');
+    
     // Add time constraint if this isn't the first check
     let queryParams = `query=${encodeURIComponent(query)}&max_results=10`;
     if (LAST_CHECK_TIME) {
       queryParams += `&start_time=${encodeURIComponent(LAST_CHECK_TIME)}`;
+      log(`Using time window: ${LAST_CHECK_TIME} to now`, 'info');
+    } else {
+      log(`First run - no time window constraint`, 'info');
     }
     
     // Make the API request to Twitter with media expansions
@@ -71,6 +78,7 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
     if (response.data && response.data.data) {
       // Update LAST_CHECK_TIME only after successful API call
       LAST_CHECK_TIME = currentCheckTime;
+      log(`Successfully updated LAST_CHECK_TIME to ${currentCheckTime}`, 'info');
       
       // Return full response object to access media and includes
       return response.data;
@@ -80,16 +88,33 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
     if (config.bearerToken === 'DUMMY_TOKEN_FOR_DEVELOPMENT') {
       // In mock mode, still update the time to avoid stagnation
       LAST_CHECK_TIME = currentCheckTime;
+      log(`Using mock data. Updated LAST_CHECK_TIME to ${currentCheckTime}`, 'info');
       return getMockTweets();
     }
     
     return { data: [], includes: { users: [], media: [] } };
   } catch (error) {
+    // Extract and log detailed error information
+    const statusCode = error.response?.status;
+    const errorTitle = error.response?.data?.title;
+    const errorDetail = error.response?.data?.detail;
+    const rateLimitRemaining = error.response?.headers?.['x-rate-limit-remaining'];
+    const rateLimitReset = error.response?.headers?.['x-rate-limit-reset'];
+    
     console.error('Error searching Twitter mentions:', error);
-    log('Failed to fetch Twitter mentions', 'error');
+    
+    if (statusCode === 429) {
+      // Rate limit error - provide more detailed logging
+      const resetTime = rateLimitReset ? new Date(parseInt(rateLimitReset) * 1000).toISOString() : 'unknown';
+      log(`Twitter API rate limit exceeded. Remaining: ${rateLimitRemaining}, Reset at: ${resetTime}`, 'error');
+    } else {
+      // Other API error
+      log(`Failed to fetch Twitter mentions: ${statusCode} ${errorTitle} - ${errorDetail}`, 'error');
+    }
     
     // For development, use mock data if API fails
     if (getTwitterConfig().bearerToken === 'DUMMY_TOKEN_FOR_DEVELOPMENT') {
+      log('Using mock data due to API failure', 'info');
       return getMockTweets();
     }
     
