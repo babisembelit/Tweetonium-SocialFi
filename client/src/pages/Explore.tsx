@@ -1,20 +1,35 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import NFTCard from "@/components/NFTCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { RefreshCw } from "lucide-react";
 
 export default function Explore() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [creatorFilter, setCreatorFilter] = useState("all");
-  const [activeTab, setActiveTab] = useState<"featured" | "new">("featured");
+  const [activeTab, setActiveTab] = useState<"featured" | "new">("new");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: nfts, isLoading } = useQuery({
     queryKey: [`/api/explore?tab=${activeTab}&sort=${sortOrder}&creator=${creatorFilter}`],
   });
+  
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await queryClient.invalidateQueries({ 
+        queryKey: [`/api/explore?tab=${activeTab}&sort=${sortOrder}&creator=${creatorFilter}`] 
+      });
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
+    }
+  };
 
   const filteredNfts = nfts 
     ? nfts.filter((nft: any) => {
