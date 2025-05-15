@@ -1,6 +1,7 @@
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import NFTModal from "./NFTModal";
 
 export interface NFT {

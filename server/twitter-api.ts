@@ -195,45 +195,50 @@ export async function processTweetMentions(): Promise<void> {
           continue;
         }
         
-        // Extract image from tweet
+        // Extract image from tweet - REQUIRED for NFT creation
         let imageUrl = null;
+        let imageFound = false;
         
-        // Check for media attachments
+        // Check for media attachments (primary method)
         if (tweet.attachments && tweet.attachments.media_keys) {
           const mediaKeys = tweet.attachments.media_keys;
           // Find the media in the includes section
           const mediaItems = response.includes?.media || [];
           
-          // Find first image
+          // Find first image - ONLY accept photo type
           const mediaItem = mediaItems.find((m: any) => 
             mediaKeys.includes(m.media_key) && 
-            (m.type === 'photo' || m.type === 'animated_gif')
+            m.type === 'photo'  // Strict photo requirement
           );
           
           if (mediaItem) {
             imageUrl = mediaItem.url || mediaItem.preview_image_url;
+            imageFound = true;
+            log(`Found attached image in tweet ${tweet.id}`, 'info');
           }
         }
         
-        // If no image found, check entities
+        // If no image found, check entities for direct image URLs
         if (!imageUrl && tweet.entities && tweet.entities.urls) {
-          // Look for image URLs in the tweet
+          // Look for explicit image URLs in the tweet
           const urlEntity = tweet.entities.urls.find((u: any) => 
             u.expanded_url && 
             (u.expanded_url.endsWith('.jpg') || 
              u.expanded_url.endsWith('.jpeg') || 
-             u.expanded_url.endsWith('.png') || 
-             u.expanded_url.endsWith('.gif'))
+             u.expanded_url.endsWith('.png'))
           );
           
           if (urlEntity) {
             imageUrl = urlEntity.expanded_url;
+            imageFound = true;
+            log(`Found image URL in tweet ${tweet.id}`, 'info');
           }
         }
         
-        // Use default image if no image found
+        // If no image found, skip this tweet - images are REQUIRED
         if (!imageUrl) {
-          imageUrl = 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb';
+          log(`No image found in tweet ${tweet.id}, skipping NFT creation`, 'warning');
+          continue; // Skip to next tweet
         }
         
         // Extract title and description from tweet text
@@ -338,6 +343,10 @@ interface TwitterAPIResponse {
 
 /**
  * Get mock tweets for development/demo purposes
+ * Includes examples of:
+ * 1. Valid tweet with photo attachment
+ * 2. Valid tweet with image URL
+ * 3. Invalid tweet without image (will be skipped)
  */
 function getMockTweets(): TwitterAPIResponse {
   const mockTweetId = 'mock_tweet_' + Date.now();
@@ -346,30 +355,37 @@ function getMockTweets(): TwitterAPIResponse {
   
   return {
     data: [
+      // Tweet 1: Valid with image attachment
       {
         id: mockTweetId,
         text: 'Title: My Amazing Digital Art | Description: Check out this amazing digital art I created! @tweetonium_xyz mint this for me! #NFT #DigitalArt',
         author_id: mockUserId,
         created_at: new Date().toISOString(),
-        entities: {
-          urls: [
-            { 
-              expanded_url: 'https://example.com/tweet-image.jpg'
-            }
-          ]
-        },
         attachments: {
           media_keys: [mediaKey]
         }
       },
+      // Tweet 2: Valid with direct image URL
       {
         id: 'mock_tweet_' + (Date.now() + 1),
         text: 'Just created this abstract piece! #title Abstract Dreams #description A journey through colors and shapes @tweetonium_xyz #NFT',
         author_id: mockUserId,
         created_at: new Date().toISOString(),
-        attachments: {
-          media_keys: ['mock_media_2']
+        entities: {
+          urls: [
+            { 
+              expanded_url: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead.jpg'
+            }
+          ]
         }
+      },
+      // Tweet 3: Invalid - no image (will be skipped by processor)
+      {
+        id: 'mock_tweet_' + (Date.now() + 2),
+        text: 'Hey @tweetonium_xyz can you help me mint an NFT? I forgot to attach an image though.',
+        author_id: mockUserId,
+        created_at: new Date().toISOString()
+        // No attachments or image URLs
       }
     ],
     includes: {
@@ -384,12 +400,8 @@ function getMockTweets(): TwitterAPIResponse {
         {
           media_key: mediaKey,
           type: 'photo',
-          url: 'https://images.unsplash.com/photo-1569172122301-bc5008bc09c5'
-        },
-        {
-          media_key: 'mock_media_2',
-          type: 'photo',
-          url: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead'
+          url: 'https://images.unsplash.com/photo-1569172122301-bc5008bc09c5',
+          preview_image_url: 'https://images.unsplash.com/photo-1569172122301-bc5008bc09c5'
         }
       ]
     }
