@@ -76,19 +76,6 @@ export default function Home() {
         <MintNFTModal open={mintOpen} onOpenChange={setMintOpen} />
       </section>
 
-      {/* Featured NFTs Section */}
-      {featuredNfts?.length > 0 && (
-        <section className="py-8 px-4 md:px-8">
-          <h3 className="text-2xl mb-6 font-medium tiny5-font">FEATURED NFTS</h3>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredNfts.map((nft: any) => (
-              <NFTCard key={nft.id} nft={nft} />
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* New NFTs Section */}
       {newNfts?.length > 0 && (
         <section className="py-8 px-4 md:px-8">
@@ -96,6 +83,19 @@ export default function Home() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {newNfts.map((nft: any) => (
+              <NFTCard key={nft.id} nft={nft} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Featured NFTs Section */}
+      {featuredNfts?.length > 0 && (
+        <section className="py-8 px-4 md:px-8">
+          <h3 className="text-2xl mb-6 font-medium tiny5-font">FEATURED NFTS</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {featuredNfts.map((nft: any) => (
               <NFTCard key={nft.id} nft={nft} />
             ))}
           </div>
