@@ -123,25 +123,19 @@ export default function Navbar() {
   return (
     <nav className="px-4 py-3 md:px-8 flex justify-between items-center border-b border-gray-800">
       <div className="flex items-center">
-        <Link href="/">
-          <a className="flex items-center" aria-label="Tweetonium Home">
-            <Logo size="sm" />
-          </a>
+        <Link href="/" className="flex items-center" aria-label="Tweetonium Home">
+          <Logo size="sm" />
         </Link>
 
         {/* Desktop Navigation */}
         <div className="ml-8 space-x-6 hidden md:flex">
-          <Link href="/explore">
-            <a className={`hover:text-gray-300 transition-colors ${location === "/explore" ? "font-medium" : ""}`}>
-              Explore
-            </a>
+          <Link href="/explore" className={`hover:text-gray-300 transition-colors ${location === "/explore" ? "font-medium" : ""}`}>
+            Explore
           </Link>
           
           {isAuthenticated && (
-            <Link href="/my-nfts">
-              <a className={`hover:text-gray-300 transition-colors ${location === "/my-nfts" ? "font-medium" : ""}`}>
-                My NFTs
-              </a>
+            <Link href="/my-nfts" className={`hover:text-gray-300 transition-colors ${location === "/my-nfts" ? "font-medium" : ""}`}>
+              My NFTs
             </Link>
           )}
         </div>
@@ -156,30 +150,27 @@ export default function Navbar() {
           </SheetTrigger>
           <SheetContent side="left" className="bg-secondary border-r border-gray-800 text-white w-[250px] pt-10">
             <nav className="flex flex-col gap-4">
-              <Link href="/">
-                <a 
-                  className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}
-                  onClick={closeSheet}
-                >
-                  Home
-                </a>
+              <Link 
+                href="/" 
+                className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/" ? "bg-gray-900 font-medium" : ""}`}
+                onClick={closeSheet}
+              >
+                Home
               </Link>
-              <Link href="/explore">
-                <a 
-                  className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}
-                  onClick={closeSheet}
-                >
-                  Explore
-                </a>
+              <Link 
+                href="/explore" 
+                className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/explore" ? "bg-gray-900 font-medium" : ""}`}
+                onClick={closeSheet}
+              >
+                Explore
               </Link>
               {isAuthenticated && (
-                <Link href="/my-nfts">
-                  <a 
-                    className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}
-                    onClick={closeSheet}
-                  >
-                    My NFTs
-                  </a>
+                <Link
+                  href="/my-nfts"
+                  className={`px-2 py-1 rounded hover:bg-gray-800 transition-colors ${location === "/my-nfts" ? "bg-gray-900 font-medium" : ""}`}
+                  onClick={closeSheet}
+                >
+                  My NFTs
                 </Link>
               )}
             </nav>
