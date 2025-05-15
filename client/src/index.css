@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tiny5:wght@400;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/tiny-5');
 @import url('https://fonts.cdnfonts.com/css/pixel-emulator');
 
 @tailwind base;
@@ -66,7 +66,7 @@
 }
 
 .tiny5-font {
-  font-family: 'Tiny5', sans-serif;
+  font-family: 'Tiny 5', sans-serif;
   letter-spacing: 1px;
 }
 
