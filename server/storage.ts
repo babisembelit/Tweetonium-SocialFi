@@ -186,7 +186,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Quantum Pixels",
       description: "A digital exploration of quantum mechanics visualized through pixel art. Each pixel represents a potential quantum state.",
-      imageUrl: "https://images.unsplash.com/photo-1534723328310-e82dad3ee43f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1633186223008-a035c4c94333?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist1.id,
       walletAddress: wallet1.publicKey,
       metadata: { name: "Quantum Pixels" } as any,
@@ -198,7 +198,7 @@ export class MemStorage implements IStorage {
     this.createNFT({
       title: "Digital Renaissance",
       description: "A modern reinterpretation of Renaissance art using digital techniques. Classical forms meet contemporary aesthetics.",
-      imageUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
+      imageUrl: "https://images.unsplash.com/photo-1625037584800-65f031d9e6e6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=800",
       creator: artist2.id,
       walletAddress: wallet2.publicKey,
       metadata: { name: "Digital Renaissance" } as any,
