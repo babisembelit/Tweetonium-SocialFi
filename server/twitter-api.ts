@@ -49,14 +49,14 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
     // Construct the search query to find tweets mentioning our handle
     const query = `@${TWEETONIUM_USERNAME}`;
     
+    // Store current time at beginning of check
+    const currentCheckTime = new Date().toISOString();
+    
     // Add time constraint if this isn't the first check
     let queryParams = `query=${encodeURIComponent(query)}&max_results=10`;
     if (LAST_CHECK_TIME) {
       queryParams += `&start_time=${encodeURIComponent(LAST_CHECK_TIME)}`;
     }
-    
-    // Update the last check time for next time
-    LAST_CHECK_TIME = new Date().toISOString();
     
     // Make the API request to Twitter with media expansions
     const response = await axios.get(
@@ -69,12 +69,17 @@ export async function searchRecentMentions(): Promise<TwitterAPIResponse> {
     );
     
     if (response.data && response.data.data) {
+      // Update LAST_CHECK_TIME only after successful API call
+      LAST_CHECK_TIME = currentCheckTime;
+      
       // Return full response object to access media and includes
       return response.data;
     }
     
     // For development, check if we should use mock data
     if (config.bearerToken === 'DUMMY_TOKEN_FOR_DEVELOPMENT') {
+      // In mock mode, still update the time to avoid stagnation
+      LAST_CHECK_TIME = currentCheckTime;
       return getMockTweets();
     }
     
