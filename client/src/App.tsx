@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import MyNFT from "@/pages/MyNFT";
 import Explore from "@/pages/Explore";
 import Navbar from "@/components/Navbar";
+import ScrollToTop from "@/components/ScrollToTop";
 
 function Router() {
   return (
@@ -19,6 +20,7 @@ function Router() {
         <Route path="/explore" component={Explore} />
         <Route component={NotFound} />
       </Switch>
+      <ScrollToTop />
     </div>
   );
 }
