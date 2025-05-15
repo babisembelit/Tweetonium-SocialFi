@@ -28,6 +28,49 @@ const upload = multer({
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = Router();
   
+  // Check session status
+  apiRouter.get("/session", (req, res) => {
+    try {
+      if (req.session && req.session.isAuthenticated) {
+        res.json({
+          isAuthenticated: true,
+          user: {
+            id: req.session.userId,
+            username: req.session.username,
+          },
+          wallet: {
+            publicKey: req.session.walletAddress,
+          }
+        });
+      } else {
+        res.json({
+          isAuthenticated: false,
+          user: null,
+          wallet: null
+        });
+      }
+    } catch (error) {
+      console.error("Session check error:", error);
+      res.status(500).json({ message: "Failed to check session status" });
+    }
+  });
+  
+  // Logout endpoint
+  apiRouter.post("/logout", (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Failed to logout" });
+        }
+        
+        res.json({ success: true });
+      });
+    } else {
+      res.json({ success: true });
+    }
+  });
+  
   // Connect X account
   apiRouter.post("/connect", async (req, res) => {
     try {
