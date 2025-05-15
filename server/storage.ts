@@ -21,6 +21,7 @@ export interface IStorage {
   getNFT(id: number): Promise<NFT | undefined>;
   getNFTsByCreator(creatorId: number): Promise<NFT[]>;
   getNFTsByTweetId(tweetId: string): Promise<NFT[]>;
+  getNFTsByWalletAddress(walletAddress: string): Promise<NFT[]>; // New method to get NFTs by wallet
   createNFT(nft: InsertNft & { tweetId?: string; featured?: number }): Promise<NFT>;
   getFeaturedNFTs(): Promise<NFT[]>;
   getNewNFTs(): Promise<NFT[]>;
@@ -488,6 +489,11 @@ export class MemStorage implements IStorage {
   async getNewNFTs(): Promise<NFT[]> {
     return Array.from(this.nftsData.values())
       .sort((a, b) => b.mintDate.getTime() - a.mintDate.getTime());
+  }
+  
+  async getNFTsByWalletAddress(walletAddress: string): Promise<NFT[]> {
+    return Array.from(this.nftsData.values())
+      .filter(nft => nft.walletAddress === walletAddress);
   }
 
   async incrementNFTViews(id: number): Promise<void> {
