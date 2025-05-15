@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 import { storage } from './storage';
-import { createNFTMetadata, mintNFT } from './solana';
+import { createNFTMetadata, prepareLazyMint, mintNFT } from './solana';
 import { formatISO } from 'date-fns';
 import { log } from './vite';
 
@@ -141,24 +141,29 @@ export async function processTweetMentions(): Promise<void> {
           ]
         });
         
-        // Mint the NFT
-        const mintResult = await mintNFT({
+        // Lazy mint the NFT
+        const lazyMintResult = await prepareLazyMint({
           metadata,
           creatorId: user.id, 
           walletAddress: wallet.publicKey
         });
         
-        // Create NFT record in our database
+        // Create NFT record in our database as lazy minted (isMinted = 0)
         await storage.createNFT({
           title: metadata.name,
           description: metadata.description,
           imageUrl: metadata.image,
           creator: user.id,
           walletAddress: wallet.publicKey,
+          tokenId: lazyMintResult.tokenId,
           tweetId: tweet.id,
-          metadata: metadata as any,
+          metadata: {
+            ...metadata as any,
+            metadataHash: lazyMintResult.metadataHash
+          },
           featured: Math.random() > 0.5 ? 1 : 0, // Randomly feature some NFTs
-          isMinted: 1
+          isMinted: 0, // 0 = lazy minted
+          transactions: `Lazy minted on ${formatISO(new Date()).split("T")[0]}`
         });
         
         log(`Successfully minted NFT for tweet ${tweet.id} by @${user.username}`, 'info');
