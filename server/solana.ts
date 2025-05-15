@@ -50,16 +50,21 @@ export function generateKeypair(): KeypairResult {
  * Creates metadata for an NFT based on input parameters.
  */
 export function createNFTMetadata(params: {
-  name: string;
+  title: string;
   description: string;
-  image: string;
+  imageUrl: string;
   creator: string;
+  attributes?: Array<{
+    trait_type: string;
+    value: string;
+  }>;
 }): NFTMetadata {
   return {
-    name: params.name,
+    name: params.title,
     description: params.description,
-    image: params.image,
+    image: params.imageUrl,
     attributes: [
+      ...(params.attributes || []),
       {
         trait_type: "Creator",
         value: params.creator,
@@ -81,7 +86,8 @@ export function createNFTMetadata(params: {
  */
 export async function mintNFT(params: {
   metadata: NFTMetadata;
-  ownerPublicKey: string;
+  creatorId: number;
+  walletAddress: string;
 }): Promise<{tokenId: string}> {
   // For the MVP, just return a mock token ID
   const timestamp = Date.now().toString();

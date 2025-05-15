@@ -1,5 +1,7 @@
 import { users, type User, type InsertUser, wallets, type Wallet, type InsertWallet, nfts, type NFT, type InsertNft } from "@shared/schema";
-import { Json } from "drizzle-orm/pg-core";
+import { json } from "drizzle-orm/pg-core";
+
+type Json = ReturnType<typeof json>;
 
 export interface IStorage {
   // User operations

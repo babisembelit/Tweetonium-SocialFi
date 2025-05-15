@@ -107,7 +107,7 @@ export async function processTweetMentions(): Promise<void> {
         let user = await storage.getUserByTwitterId(tweet.author_id);
         if (!user) {
           // Create a new user based on Twitter info
-          const twitterUser = tweet.includes?.users?.find(u => u.id === tweet.author_id) || {
+          const twitterUser = tweet.includes?.users?.find((u: any) => u.id === tweet.author_id) || {
             username: 'user_' + tweet.author_id,
             profile_image_url: null
           };
@@ -155,10 +155,10 @@ export async function processTweetMentions(): Promise<void> {
           imageUrl: metadata.image,
           creator: user.id,
           walletAddress: wallet.publicKey,
-          mintDate: new Date(),
           tweetId: tweet.id,
-          metadata: metadata,
-          featured: Math.random() > 0.5 ? 1 : 0 // Randomly feature some NFTs
+          metadata: metadata as any,
+          featured: Math.random() > 0.5 ? 1 : 0, // Randomly feature some NFTs
+          isMinted: 1
         });
         
         log(`Successfully minted NFT for tweet ${tweet.id} by @${user.username}`, 'info');

@@ -8,6 +8,7 @@ import { generateKeypair, createNFTMetadata } from "./solana";
 import { formatISO } from "date-fns";
 import path from "path";
 import fs from "fs/promises";
+import { startPeriodicMentionChecking } from "./twitter-api";
 
 // Set up multer for file uploads
 const upload = multer({
