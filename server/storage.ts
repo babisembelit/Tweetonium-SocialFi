@@ -1,7 +1,5 @@
 import { users, type User, type InsertUser, wallets, type Wallet, type InsertWallet, nfts, type NFT, type InsertNft } from "@shared/schema";
 import { json } from "drizzle-orm/pg-core";
-import { eq, desc } from "drizzle-orm";
-import { db } from "./db";
 
 type Json = ReturnType<typeof json>;
 
@@ -23,7 +21,6 @@ export interface IStorage {
   getNFT(id: number): Promise<NFT | undefined>;
   getNFTsByCreator(creatorId: number): Promise<NFT[]>;
   getNFTsByTweetId(tweetId: string): Promise<NFT[]>;
-  getNFTsByWalletAddress(walletAddress: string): Promise<NFT[]>; // New method to get NFTs by wallet
   createNFT(nft: InsertNft & { tweetId?: string; featured?: number }): Promise<NFT>;
   getFeaturedNFTs(): Promise<NFT[]>;
   getNewNFTs(): Promise<NFT[]>;
@@ -492,11 +489,6 @@ export class MemStorage implements IStorage {
     return Array.from(this.nftsData.values())
       .sort((a, b) => b.mintDate.getTime() - a.mintDate.getTime());
   }
-  
-  async getNFTsByWalletAddress(walletAddress: string): Promise<NFT[]> {
-    return Array.from(this.nftsData.values())
-      .filter(nft => nft.walletAddress === walletAddress);
-  }
 
   async incrementNFTViews(id: number): Promise<void> {
     const nft = this.nftsData.get(id);
@@ -538,195 +530,16 @@ class ResetableMemStorage extends MemStorage {
   }
 }
 
-// DatabaseStorage implementation using Drizzle ORM
-export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    const results = await db.select().from(users).where(eq(users.id, id));
-    return results[0] || undefined;
+// Initialize storage with sample data using the resettable storage
+const storage = new ResetableMemStorage();
+
+// Reset the data to ensure it's properly initialized
+(async () => {
+  try {
+    await (storage as ResetableMemStorage).resetData();
+  } catch (error) {
+    console.error("Error initializing storage:", error);
   }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const results = await db.select().from(users).where(eq(users.username, username));
-    return results[0] || undefined;
-  }
-
-  async getUserByTwitterId(twitterId: string): Promise<User | undefined> {
-    const results = await db.select().from(users).where(eq(users.twitterId, twitterId));
-    return results[0] || undefined;
-  }
-
-  async createUser(insertUser: InsertUser & { twitterId?: string }): Promise<User> {
-    const results = await db
-      .insert(users)
-      .values({
-        username: insertUser.username,
-        profileImage: insertUser.profileImage,
-        twitterId: insertUser.twitterId || null
-      })
-      .returning();
-    return results[0];
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    return db.select().from(users);
-  }
-
-  async getWallet(id: number): Promise<Wallet | undefined> {
-    const results = await db.select().from(wallets).where(eq(wallets.id, id));
-    return results[0] || undefined;
-  }
-
-  async getWalletByUserId(userId: number): Promise<Wallet | undefined> {
-    const results = await db.select().from(wallets).where(eq(wallets.userId, userId));
-    return results[0] || undefined;
-  }
-
-  async createWallet(insertWallet: InsertWallet): Promise<Wallet> {
-    const results = await db
-      .insert(wallets)
-      .values({
-        userId: insertWallet.userId,
-        publicKey: insertWallet.publicKey,
-        privateKey: insertWallet.privateKey
-      })
-      .returning();
-    return results[0];
-  }
-
-  async createWalletForUser(userId: number): Promise<Wallet> {
-    // Check if user exists
-    const user = await this.getUser(userId);
-    if (!user) {
-      throw new Error(`User with ID ${userId} not found`);
-    }
-    
-    // Check if user already has a wallet
-    const existingWallet = await this.getWalletByUserId(userId);
-    if (existingWallet) {
-      return existingWallet;
-    }
-    
-    // Generate a simple wallet (in a real app, this would call the Solana API)
-    // Here we're just using a random public/private key pair for demo
-    const publicKey = `wallet_${Math.random().toString(36).substring(2, 15)}`;
-    const privateKey = `private_${Math.random().toString(36).substring(2, 15)}`;
-    
-    // Create and store the wallet
-    const wallet = await this.createWallet({
-      userId,
-      publicKey,
-      privateKey
-    });
-    
-    return wallet;
-  }
-
-  async getNFT(id: number): Promise<NFT | undefined> {
-    const results = await db.select().from(nfts).where(eq(nfts.id, id));
-    return results[0] || undefined;
-  }
-
-  async getNFTsByCreator(creatorId: number): Promise<NFT[]> {
-    return db.select().from(nfts).where(eq(nfts.creator, creatorId));
-  }
-
-  async getNFTsByTweetId(tweetId: string): Promise<NFT[]> {
-    return db.select().from(nfts).where(eq(nfts.tweetId, tweetId));
-  }
-
-  async getNFTsByWalletAddress(walletAddress: string): Promise<NFT[]> {
-    return db.select().from(nfts).where(eq(nfts.walletAddress, walletAddress));
-  }
-
-  async createNFT(insertNft: InsertNft & { tweetId?: string; featured?: number; id?: number }): Promise<NFT> {
-    // Handle the case where the ID is provided (for updates)
-    if (insertNft.id) {
-      const id = insertNft.id;
-      const { id: _, ...updateData } = insertNft; // Remove id from the values to be updated
-      
-      const results = await db
-        .update(nfts)
-        .set({
-          ...updateData,
-          tweetId: updateData.tweetId || null,
-          featured: updateData.featured || 0
-        })
-        .where(eq(nfts.id, id))
-        .returning();
-      
-      return results[0];
-    } 
-    
-    // New NFT creation
-    const results = await db
-      .insert(nfts)
-      .values({
-        title: insertNft.title,
-        description: insertNft.description || null,
-        imageUrl: insertNft.imageUrl,
-        creator: insertNft.creator,
-        walletAddress: insertNft.walletAddress,
-        tokenId: insertNft.tokenId || null,
-        metadata: insertNft.metadata,
-        isMinted: insertNft.isMinted || 0,
-        tweetId: insertNft.tweetId || null,
-        featured: insertNft.featured || 0,
-        floorPrice: insertNft.floorPrice || null,
-        transactions: insertNft.transactions || null
-      })
-      .returning();
-    
-    return results[0];
-  }
-
-  async getFeaturedNFTs(): Promise<NFT[]> {
-    return db
-      .select()
-      .from(nfts)
-      .where(eq(nfts.featured, 1))
-      .orderBy(desc(nfts.mintDate));
-  }
-
-  async getNewNFTs(): Promise<NFT[]> {
-    return db
-      .select()
-      .from(nfts)
-      .orderBy(desc(nfts.mintDate));
-  }
-
-  async incrementNFTViews(id: number): Promise<void> {
-    const results = await db
-      .select()
-      .from(nfts)
-      .where(eq(nfts.id, id));
-    
-    if (results.length > 0) {
-      const nft = results[0];
-      await db
-        .update(nfts)
-        .set({ views: (nft.views || 0) + 1 })
-        .where(eq(nfts.id, id));
-    }
-  }
-}
-
-// Choose which storage implementation to use based on environment
-const useDatabase = process.env.USE_DATABASE === 'true';
-
-// Initialize storage with the appropriate implementation
-const storage = useDatabase 
-  ? new DatabaseStorage() 
-  : new ResetableMemStorage();
-
-// If using memory storage, reset the data to ensure it's properly initialized
-if (!useDatabase) {
-  (async () => {
-    try {
-      await (storage as ResetableMemStorage).resetData();
-    } catch (error) {
-      console.error("Error initializing storage:", error);
-    }
-  })();
-}
+})();
 
 export { storage };
