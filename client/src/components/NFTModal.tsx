@@ -32,12 +32,12 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
   const purchaseMutation = useMutation({
     mutationFn: async () => {
       if (!wallet) throw new Error("No wallet connected");
-      return apiRequest(`/api/nft/${nft.id}/purchase`, {
-        method: "POST",
-        body: JSON.stringify({
+      return apiRequest(`/api/nft/${nft.id}/purchase`, 
+        JSON.stringify({
           buyerWalletAddress: wallet.publicKey
-        })
-      });
+        }), 
+        "POST"
+      );
     },
     onSuccess: (data) => {
       // Update the local NFT state
@@ -52,7 +52,7 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
       toast({
         title: "Success!",
         description: "The NFT has been purchased and minted on-chain",
-        variant: "success"
+        variant: "default"
       });
       
       // Invalidate relevant queries
@@ -91,12 +91,14 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
       <DialogDescription className="sr-only">{localNft.description}</DialogDescription>
       <div className="flex flex-col md:flex-row max-h-[85vh] overflow-auto">
         {/* Left side - Image */}
-        <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative h-auto" style={{ minHeight: '280px' }}>
-          <img 
-            src={localNft.image} 
-            alt={localNft.title}
-            className="max-w-full max-h-[70vh] md:max-h-[500px] object-contain p-4"
-          />
+        <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative overflow-hidden" style={{ maxHeight: '60vh' }}>
+          <div className="w-full h-full flex items-center justify-center p-2">
+            <img 
+              src={localNft.image} 
+              alt={localNft.title}
+              className="max-w-full max-h-[50vh] object-contain"
+            />
+          </div>
           
           {/* Minting Status Badge */}
           {isLazyMinted && (

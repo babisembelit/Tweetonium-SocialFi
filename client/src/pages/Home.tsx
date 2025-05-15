@@ -13,7 +13,7 @@ export default function Home() {
   const { isAuthenticated } = useAuthStore();
   
   const handlePostToX = () => {
-    const postText = encodeURIComponent("Title:\nDesc:\n@tweetonium_xyz #NFT");
+    const postText = encodeURIComponent("Title:\nDesc:\n@tweetonium_xyz");
     window.open(`https://twitter.com/intent/tweet?text=${postText}`, "_blank");
   };
 

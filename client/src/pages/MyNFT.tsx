@@ -12,7 +12,7 @@ export default function MyNFT() {
   });
   
   const handlePostToX = () => {
-    const postText = encodeURIComponent("Check out my artwork! @tweetonium_xyz #NFT #Web3");
+    const postText = encodeURIComponent("Title:\nDesc:\n@tweetonium_xyz");
     window.open(`https://twitter.com/intent/tweet?text=${postText}`, "_blank");
   };
 
