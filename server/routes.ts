@@ -281,6 +281,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register the API router with prefix
   app.use("/api", apiRouter);
+  
+  // Start periodic Twitter mention checking if API key is available
+  if (process.env.TWITTER_BEARER_TOKEN) {
+    startPeriodicMentionChecking(5); // Check every 5 minutes
+    console.log("Twitter mention checking initialized");
+  } else {
+    console.log("Warning: TWITTER_BEARER_TOKEN not found, automatic tweet detection is disabled");
+  }
 
   const httpServer = createServer(app);
 
