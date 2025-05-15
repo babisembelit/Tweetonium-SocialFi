@@ -538,9 +538,6 @@ class ResetableMemStorage extends MemStorage {
   }
 }
 
-import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
-
 // DatabaseStorage implementation using Drizzle ORM
 export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
