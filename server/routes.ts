@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertUserSchema } from "@shared/schema";
-import { generateKeypair, createNFTMetadata, prepareLazyMint, finalizeNFTMinting } from "./solana";
+import { generateKeypair, createNFTMetadata, prepareLazyMint, finalizeNFTMinting, getWalletBalance } from "./solana";
 import { formatISO } from "date-fns";
 import path from "path";
 import fs from "fs/promises";
@@ -28,7 +28,7 @@ const upload = multer({
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = Router();
   
-  // Connect X account (simulated)
+  // Connect X account
   apiRouter.post("/connect", async (req, res) => {
     try {
       // Validate request body
@@ -54,13 +54,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let wallet = await storage.getWalletByUserId(user.id);
       
       if (!wallet) {
-        // Generate Solana keypair
+        // Generate real Solana keypair with encrypted private key
         const keypair = generateKeypair();
         
         wallet = await storage.createWallet({
           userId: user.id,
           publicKey: keypair.publicKey,
-          privateKey: keypair.privateKey,
+          privateKey: keypair.privateKey, // Store encrypted private key
         });
       }
       
@@ -76,6 +76,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Connect error:", error);
       res.status(400).json({ message: "Failed to connect account" });
+    }
+  });
+  
+  // Get wallet balance (actual Solana balance)
+  apiRouter.get("/wallet/:publicKey/balance", async (req, res) => {
+    try {
+      const { publicKey } = req.params;
+      
+      if (!publicKey) {
+        return res.status(400).json({ message: "Public key is required" });
+      }
+      
+      // Get the actual wallet balance from Solana network
+      const balance = await getWalletBalance(publicKey);
+      
+      // Convert from lamports to SOL (1 SOL = 1,000,000,000 lamports)
+      const solBalance = balance / 1_000_000_000;
+      
+      res.json({ 
+        balance: balance,
+        solBalance: solBalance.toFixed(9),
+        publicKey: publicKey
+      });
+      
+    } catch (error) {
+      console.error("Error getting wallet balance:", error);
+      res.status(500).json({ message: "Failed to get wallet balance" });
     }
   });
   
