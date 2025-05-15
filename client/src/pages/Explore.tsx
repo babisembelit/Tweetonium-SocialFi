@@ -46,7 +46,19 @@ export default function Explore() {
   return (
     <main className="flex-grow">
       <div className="py-8 px-4 md:px-8">
-        <h2 className="text-3xl mb-6 pixel-font">EXPLORE</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl pixel-font">EXPLORE</h2>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-white border-gray-700 hover:bg-gray-800"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
         
         {/* Search and Filter */}
         <div className="mb-8">
