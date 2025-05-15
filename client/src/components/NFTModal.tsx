@@ -86,14 +86,16 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
   };
   
   return (
-    <DialogContent className="w-[95%] max-w-5xl mx-auto bg-secondary border border-gray-800 text-white p-0 overflow-hidden">
-      <div className="flex flex-col md:flex-row">
+    <DialogContent className="w-[95%] max-w-5xl mx-auto bg-secondary border border-gray-800 text-white p-0 max-h-[90vh] overflow-hidden">
+      <DialogTitle className="sr-only">{localNft.title}</DialogTitle>
+      <DialogDescription className="sr-only">{localNft.description}</DialogDescription>
+      <div className="flex flex-col md:flex-row max-h-[85vh] overflow-auto">
         {/* Left side - Image */}
-        <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative h-auto" style={{ minHeight: '300px' }}>
+        <div className="md:w-1/2 flex items-center justify-center bg-gray-900 relative h-auto" style={{ minHeight: '280px' }}>
           <img 
             src={localNft.image} 
             alt={localNft.title}
-            className="max-w-full max-h-[80vh] md:max-h-[500px] object-contain p-4"
+            className="max-w-full max-h-[70vh] md:max-h-[500px] object-contain p-4"
           />
           
           {/* Minting Status Badge */}
@@ -110,7 +112,7 @@ export default function NFTModal({ nft, isUserNFT = false }: NFTModalProps) {
         </div>
         
         {/* Right side - Info */}
-        <div className="md:w-1/2 p-5 sm:p-6 flex flex-col">
+        <div className="md:w-1/2 p-5 sm:p-6 flex flex-col overflow-y-auto max-h-[500px]">
           <div className="mb-4">
             <h2 className="text-2xl font-bold flex items-center gap-2">
               {localNft.title}
