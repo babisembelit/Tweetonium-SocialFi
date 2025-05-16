@@ -7,9 +7,8 @@ X Profile: https://x.com/tweetonium_xyz
 
 ## 📸 Demo
 
-Check live project: http://tweetonium.xyz
-
-Check technical demo video: https://youtu.be/Kn8-O7YWGHs
+- Check live project: http://tweetonium.xyz
+- Check technical demo video: https://youtu.be/Kn8-O7YWGHs
 
 ## 🚀 Features
 
@@ -82,27 +81,28 @@ TWITTER_BEARER_TOKEN=your_twitter_api_bearer_token
 - Handles API rate limiting with exponential backoff
 - Updates timestamps after successful processing
 
-Development Workflow
-Adding New Features
-Define the data model in shared/schema.ts
-Implement server-side logic in server/routes.ts
-Create or update frontend components as needed
-Test thoroughly across devices
-Deployment
-The application can be deployed to any Node.js hosting platform
-Requires PostgreSQL database connection
-Set up appropriate environment variables for production
-Troubleshooting
-Common Issues
-Twitter API Rate Limiting: The application implements detailed logging for rate limit issues
-Missing Tweets: Ensure tweets contain images and properly mention @tweetonium_xyz
-Database Connectivity: Verify DATABASE_URL environment variable is correct
-Viewing Logs
-Check server logs for detailed information about tweet processing
-Look for rate limit information in error logs
-License
-[Specify your license information here]
+## Development Workflow
+### Adding New Features
+- Define the data model in shared/schema.ts
+- Implement server-side logic in server/routes.ts
+- Create or update frontend components as needed
+- Test thoroughly across devices
 
-Contributors
-[List project contributors here]
+### Deployment
+- The application can be deployed to any Node.js hosting platform
+- Requires PostgreSQL database connection
+- Set up appropriate environment variables for production
+
+## Troubleshooting
+### Common Issues
+- Twitter API Rate Limiting: The application implements detailed logging for rate limit issues
+- Missing Tweets: Ensure tweets contain images and properly mention @tweetonium_xyz
+- Database Connectivity: Verify DATABASE_URL environment variable is correct
+
+### Viewing Logs
+- Check server logs for detailed information about tweet processing
+- Look for rate limit information in error logs
+
+## Contributors
+@0xwnrft
 
