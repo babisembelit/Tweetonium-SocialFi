@@ -43,14 +43,16 @@ X Profile: https://x.com/tweetonium_xyz
 - Twitter API bearer token
 
 ### Environment Variables
+```
 DATABASE_URL=your_postgresql_connection_string
 TWITTER_BEARER_TOKEN=your_twitter_api_bearer_token
+```
 
 ## Installation Steps
 1. Clone the repository
-2. Install dependencies: npm install
-3. Set up the database: npm run db:push
-4. Start the development server: npm run dev
+2. Install dependencies: ```npm install```
+3. Set up the database: ```npm run db:push```
+4. Start the development server: ```npm run dev```
 
 ## Usage Guide
 ### For Creators
@@ -83,8 +85,8 @@ TWITTER_BEARER_TOKEN=your_twitter_api_bearer_token
 
 ## Development Workflow
 ### Adding New Features
-- Define the data model in shared/schema.ts
-- Implement server-side logic in server/routes.ts
+- Define the data model in ```shared/schema.ts```
+- Implement server-side logic in ```server/routes.ts```
 - Create or update frontend components as needed
 - Test thoroughly across devices
 
