@@ -8,6 +8,7 @@ X Profile: https://x.com/tweetonium_xyz
 ## 📸 Demo
 
 Check live project: http://tweetonium.xyz
+
 Check technical demo video: https://youtu.be/Kn8-O7YWGHs
 
 ## 🚀 Features
