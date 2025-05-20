@@ -3,6 +3,7 @@
 Empowering creators & artists to effortlessly mint their artwork as NFTs on Solana! By super simple step:
 "Create X post of your artwork and tag @tweetonium_xyz to transforms it into NFTs on the Solana Blockchain"
 
+🚀 [View the Pitch Deck](https://drive.google.com/file/d/1T4ImWxdMY5I2ba6JLGIKRujAD7SJyuBY/view)
 X Profile: https://x.com/tweetonium_xyz
 
 ## 📸 Demo
