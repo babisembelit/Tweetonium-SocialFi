@@ -108,5 +108,5 @@ TWITTER_BEARER_TOKEN=your_twitter_api_bearer_token
 - Look for rate limit information in error logs
 
 ## Contributors
-@0xwnrft https://x.com/0xwnrft (Product Desiner)
-@DavinDjayadi https://x.com/DavinDjayadi (Fullstack Developer)
+- @0xwnrft https://x.com/0xwnrft (Product Desiner)
+- @DavinDjayadi https://x.com/DavinDjayadi (Fullstack Developer)
